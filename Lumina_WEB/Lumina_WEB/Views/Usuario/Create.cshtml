@@ -1,0 +1,511 @@
+﻿@model Usuario
+
+@{
+    ViewData["Title"] = "Lúmina - Completa tu Perfil";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@ViewData["Title"]</title>
+
+<!-- ================= BOOTSTRAP 5 (CSS) ================= -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+
+<!-- ================= CSS PROPIO ================= -->
+<style>
+    :root {
+        --color-primary: #a33c36;
+        --color-primary-hover: #8f342e;
+        --color-on-primary: #ffffff;
+        --color-background: #fff8f6;
+        --color-cream-surface: #FEEEE8;
+        --color-on-surface: #2f140f;
+        --color-muted-text: #7A4035;
+        --color-soft-text: #C48070;
+        --color-outline-variant: #ddc0bd;
+        --color-custom-input-bg: #FFF4F0;
+        --color-custom-input-border: #F9BD91;
+        --color-custom-input-border-focus: #F58A72;
+        --color-success: #4CAF50;
+    }
+
+    body {
+        background-color: var(--color-background);
+        font-family: 'Nunito Sans', sans-serif;
+        color: var(--color-on-surface);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+    .font-display {
+        font-family: 'EB Garamond', serif;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+    }
+
+    .lumina-card {
+        max-width: 1000px;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        box-shadow: 0 25px 50px -12px rgba(180, 60, 50, 0.13);
+        border: 1px solid var(--color-outline-variant);
+    }
+
+    /* Panel izquierdo (branding) */
+    .lumina-brand-panel {
+        background-color: var(--color-cream-surface);
+        padding: 3rem;
+    }
+
+    .lumina-logo-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: var(--color-primary);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lumina-brand-title {
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--color-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .lumina-headline {
+        font-family: 'EB Garamond', serif;
+        font-size: 32px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: var(--color-on-surface);
+    }
+
+    .lumina-subtext {
+        color: var(--color-muted-text);
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 22rem;
+    }
+
+    .lumina-step-indicator {
+        color: var(--color-soft-text);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .lumina-step-line {
+        width: 2rem;
+        height: 1px;
+        background-color: var(--color-outline-variant);
+    }
+
+    /* Panel derecho (formulario) */
+    .lumina-form-panel {
+        background-color: #ffffff;
+        padding: 2rem;
+    }
+
+    .media (min-width: 992px) {
+        .lumina-form-panel {
+            padding: 3rem;
+        }
+    }
+
+    .lumina-form-title {
+        font-family: 'EB Garamond', serif;
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--color-on-surface);
+    }
+
+    .lumina-form-subtitle {
+        color: var(--color-soft-text);
+        font-size: 13px;
+    }
+
+    .lumina-label {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-muted-text);
+    }
+
+    .lumina-input {
+        background-color: var(--color-custom-input-bg);
+        border: 1px solid var(--color-custom-input-border);
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 13px;
+        color: var(--color-on-surface);
+        transition: all 0.3s ease;
+    }
+
+    .lumina-input:focus {
+        border-color: var(--color-custom-input-border-focus);
+        box-shadow: 0 0 0 4px rgba(245, 138, 114, 0.15);
+        outline: none;
+        background-color: var(--color-custom-input-bg);
+        color: var(--color-on-surface);
+    }
+
+    /* Avatar upload */
+    .lumina-avatar-wrapper {
+        position: relative;
+        width: 6rem;
+        height: 6rem;
+        cursor: pointer;
+    }
+
+    .lumina-avatar-circle {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px dashed var(--color-outline-variant);
+        background-color: var(--color-background);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: border-color 0.3s ease;
+    }
+
+    .lumina-avatar-wrapper:hover .lumina-avatar-circle {
+        border-color: var(--color-primary);
+    }
+
+    .lumina-avatar-wrapper:hover #pfp-placeholder {
+        color: var(--color-primary);
+    }
+
+    #pfp-placeholder {
+        font-size: 2.25rem;
+        color: var(--color-soft-text);
+        transition: color 0.3s ease;
+    }
+
+    #pfp-preview {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .lumina-avatar-edit-btn {
+        position: absolute;
+        bottom: -4px;
+        right: -4px;
+        background-color: var(--color-primary);
+        color: #fff;
+        width: 2.25rem;
+        height: 2.25rem;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transition: transform 0.15s ease;
+    }
+
+    .lumina-avatar-edit-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .lumina-avatar-edit-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Botón principal */
+    .btn-lumina-primary {
+        background-color: var(--color-primary);
+        color: var(--color-on-primary);
+        border: none;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 10px 20px -5px rgba(163, 60, 54, 0.2);
+        transition: all 0.15s ease;
+    }
+
+    .btn-lumina-primary:hover {
+        background-color: var(--color-primary-hover);
+        color: var(--color-on-primary);
+    }
+
+    .btn-lumina-primary:active {
+        transform: scale(0.98);
+    }
+
+    .lumina-footer-text {
+        color: rgba(196, 128, 112, 0.6);
+        font-size: 13px;
+    }
+
+    .lumina-footer-text a {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    .lumina-footer-text a:hover {
+        color: var(--color-primary);
+    }
+
+    /* Overlay de éxito */
+    #successOverlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(255, 248, 246, 0.95);
+        backdrop-filter: blur(20px);
+        z-index: 1050;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+
+    #successOverlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    #successIcon {
+        width: 6rem;
+        height: 6rem;
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--color-success);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transform: scale(0);
+        transition: transform 0.5s ease;
+    }
+
+    #successIcon.show {
+        transform: scale(1);
+    }
+
+    #successIcon .material-symbols-outlined {
+        font-size: 3rem;
+    }
+
+    /* Mensajes de error de validación */
+    .text-danger {
+        font-size: 12px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ================= HTML PRINCIPAL ================= -->
+<main class="lumina-card row g-0 bg-white">
+
+    <!-- Panel Izquierdo: Branding (visible solo en escritorio) -->
+    <section class="col-lg-6 d-none d-lg-flex flex-column justify-content-between lumina-brand-panel">
+        <div>
+            <div class="d-flex align-items-center gap-3 mb-5">
+                <div class="lumina-logo-icon">
+                    <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">spa</span>
+                </div>
+                <span class="font-display lumina-brand-title">Lúmina</span>
+            </div>
+            <h1 class="lumina-headline mb-3">Crea tu santuario emocional</h1>
+            <p class="lumina-subtext">
+                Queremos conocerte un poco mejor para personalizar tu experiencia y acompañarte en tu camino hacia el bienestar.
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 lumina-step-indicator">
+            <span class="lumina-step-line"></span>
+            <span>Paso 2 de 3: Perfil</span>
+        </div>
+    </section>
+
+    <!-- Panel Derecho: Formulario -->
+    <section class="col-12 col-lg-6 lumina-form-panel">
+        <header class="mb-5 text-center text-lg-start">
+            <h2 class="lumina-form-title mb-2">Información Personal</h2>
+            <p class="lumina-form-subtitle mb-0">Completa los detalles para tu diario personal.</p>
+        </header>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        }
+
+        <form id="profileForm" asp-action="Create" asp-controller="Usuario" method="post" enctype="multipart/form-data" novalidate>
+            @Html.HiddenFor(m => m.idCuenta)
+
+            <!-- Subida de foto de perfil -->
+            <div class="d-flex flex-column align-items-center align-items-lg-start gap-3 mb-4">
+                <span class="lumina-label">Foto de perfil</span>
+                <div class="lumina-avatar-wrapper" id="avatarWrapper">
+                    <div class="lumina-avatar-circle">
+                        <span class="material-symbols-outlined" id="pfp-placeholder">add_a_photo</span>
+                        <img id="pfp-preview"
+                             class="d-none"
+                             src=""
+                             alt="Vista previa de foto de perfil">
+                    </div>
+                    <button class="lumina-avatar-edit-btn" type="button" id="avatarEditBtn">
+                        <span class="material-symbols-outlined" style="font-size: 1rem;">edit</span>
+                    </button>
+                    <input type="file" accept="image/*" class="d-none" id="fotoPerfil" name="fotoPerfil">
+                </div>
+            </div>
+
+            <!-- Grid de información personal -->
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label asp-for="nombre" class="lumina-label form-label">Nombre</label>
+                    <input asp-for="nombre" type="text" class="form-control lumina-input" placeholder="Aldo" required>
+                    <span asp-validation-for="nombre" class="text-danger"></span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="apellido" class="lumina-label form-label">Apellido</label>
+                    <input asp-for="apellido" type="text" class="form-control lumina-input" placeholder="Granados" required>
+                    <span asp-validation-for="apellido" class="text-danger"></span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="fechaNacimiento" class="lumina-label form-label">Fecha de nacimiento</label>
+                    <input asp-for="fechaNacimiento" type="date" class="form-control lumina-input" required>
+                    <span asp-validation-for="fechaNacimiento" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-grid gap-3 mt-5">
+                <button type="submit" class="btn btn-lumina-primary">
+                    Continuar y Guardar Perfil
+                </button>
+            </div>
+        </form>
+
+        <footer class="mt-5 text-center text-lg-start">
+            <p class="lumina-footer-text mb-0">
+                Tus datos están protegidos y son solo para uso personal dentro de Lúmina.
+                <a href="#">Política de Privacidad</a>
+            </p>
+        </footer>
+    </section>
+</main>
+
+<!-- Overlay de confirmación de éxito -->
+<div id="successOverlay">
+    <div class="text-center p-4" style="max-width: 28rem;">
+        <div id="successIcon">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        </div>
+        <h3 class="lumina-headline mb-3">¡Todo listo, @(Model?.nombre ?? "amig@")!</h3>
+        <p class="lumina-subtext mb-4 mx-auto">Tu perfil ha sido configurado con éxito. Es hora de comenzar tu viaje hacia la calma.</p>
+        <button class="btn btn-lumina-primary px-5" id="enterBtn">
+            Entrar al Santuario
+        </button>
+    </div>
+</div>
+
+<!-- ================= BOOTSTRAP 5 (JS) ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ================= JS PROPIO ================= -->
+<script>
+    (function () {
+        'use strict';
+
+        const form = document.getElementById('profileForm');
+        const overlay = document.getElementById('successOverlay');
+        const icon = document.getElementById('successIcon');
+        const pfpPreview = document.getElementById('pfp-preview');
+        const pfpPlaceholder = document.getElementById('pfp-placeholder');
+        const avatarWrapper = document.getElementById('avatarWrapper');
+        const avatarInput = document.getElementById('fotoPerfil');
+        const enterBtn = document.getElementById('enterBtn');
+
+        // Envío real del formulario vía fetch para conservar el overlay de éxito
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch('@Url.Action("Create", "Usuario")', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.redirected) {
+                    window.location.href = res.url;   // el servidor redirige a Home/Index
+                    return;
+                }
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    showError('No se pudo guardar el perfil. Inténtalo de nuevo.');
+                    return;
+                }
+
+                // Si el servidor devuelve la misma vista (error de validación),
+                // la recargamos para mostrar los mensajes
+                window.location.reload();
+            } catch (err) {
+                showError('Error de conexión. Inténtalo de nuevo.');
+            }
+        });
+
+        function showError(message) {
+            alert(message);
+        }
+
+        // Selección de imagen de perfil (vista previa)
+        avatarWrapper.addEventListener('click', function () {
+            avatarInput.click();
+        });
+
+        avatarInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    pfpPreview.src = ev.target.result;
+                    pfpPlaceholder.classList.add('d-none');
+                    pfpPreview.classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Botón "Entrar al Santuario" -> ir al Home
+        enterBtn.addEventListener('click', function () {
+            window.location.href = '@Url.Action("Index", "Home")';
+        });
+    })();
+</script>
+
+</body>
+</html>

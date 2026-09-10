@@ -1,0 +1,205 @@
+@*
+ * ════════════════════════════════════════════════════
+ *  VISTA: Details.cshtml
+ *  
+ *  Muestra los detalles de una entrada en modo solo lectura.
+ *  No permite editar, solo visualizar la información.
+ * ════════════════════════════════════════════════════
+ *@
+
+@model Lumina_WEB.Models.EntradaDiario
+
+@{
+    ViewData["Title"] = "Detalle de Entrada";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px 60px
+    }
+
+    /* ── ESTILOS DEL PANEL ── */
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 14px
+    }
+
+    .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .panel-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text)
+    }
+
+    /* ── ESTILOS DEL DETALLE ── */
+    .detail {
+        padding: 18px
+    }
+
+    .detail-row {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--bg)
+    }
+
+    .detail-row:last-child {
+        border-bottom: none
+    }
+
+    .detail-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .05em
+    }
+
+    .detail-value {
+        font-size: 12px;
+        color: var(--text);
+        line-height: 1.6
+    }
+
+    .detail-value.estado-animo {
+        display: flex;
+        align-items: center;
+        gap: 8px
+    }
+
+    .estado-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: var(--c1);
+        border: 1px solid var(--border)
+    }
+
+    .contenido-texto {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 12px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-wrap: break-word
+    }
+
+    /* ── ESTILOS DE LOS BOTONES ── */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 14px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none
+    }
+
+    .btn-p {
+        background: var(--c5);
+        color: #fff;
+        border: none
+    }
+
+    .btn-s {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted)
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 12px;
+        border-top: 1px solid var(--border)
+    }
+</style>
+
+
+<div class="panel">
+
+    <div class="panel-head">
+        <span class="panel-label">👁️ Detalle de entrada</span>
+    </div>
+
+    <div class="detail">
+
+        <!-- ID -->
+        <div class="detail-row">
+            <div class="detail-label">#</div>
+            <div class="detail-value" style="color:var(--soft)">@Model.Id</div>
+        </div>
+
+        <!-- Título -->
+        <div class="detail-row">
+            <div class="detail-label">Título</div>
+            <div class="detail-value" style="font-weight:700;font-size:14px">@Model.Titulo</div>
+        </div>
+
+        <!-- Estado de ánimo -->
+        <div class="detail-row">
+            <div class="detail-label">Estado de ánimo</div>
+            <div class="detail-value estado-animo">
+                <span class="estado-badge">@ViewBag.EstadoAnimo.Emoji @ViewBag.EstadoAnimo.Nombre</span>
+            </div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="detail-row">
+            <div class="detail-label">Contenido</div>
+            <div class="detail-value">
+                @if (!string.IsNullOrEmpty(Model.Contenido))
+                {
+                    <div class="contenido-texto">@Model.Contenido</div>
+                }
+                else
+                {
+                    <span style="color:var(--soft);font-style:italic">Sin contenido</span>
+                }
+            </div>
+        </div>
+
+        <!-- Fecha -->
+        <div class="detail-row">
+            <div class="detail-label">Fecha</div>
+            <div class="detail-value">@Model.FechaCreacion.ToString("dd MMMM yyyy")</div>
+        </div>
+
+        <!-- Botones -->
+        <div class="form-actions">
+            <a asp-action="Index"
+               class="btn btn-s">
+                ← Volver
+            </a>
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-p">
+                ✏️ Editar
+            </a>
+        </div>
+
+    </div>
+
+</div>

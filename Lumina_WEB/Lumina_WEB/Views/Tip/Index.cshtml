@@ -1,0 +1,380 @@
+﻿@model IEnumerable<Lumina_WEB.Models.Tip>
+@{
+    ViewData["Title"] = "Tips";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-bar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .page-bar h1 {
+            font-family: 'Cormorant Garamond',serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+    .content-area {
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .panel-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        text-align: left;
+        font-size: 9.5px;
+        font-weight: 700;
+        color: var(--soft);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        padding: 8px 16px;
+        border-bottom: 1.5px solid var(--border);
+    }
+
+    td {
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--bg);
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background: var(--bg);
+    }
+
+    .acts {
+        display: flex;
+        gap: 6px;
+    }
+
+    .btn-s {
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+    }
+
+        .btn-s:hover {
+            background: var(--bg);
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+    .btn-d {
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #FEE2E2;
+        border: 1px solid #FECACA;
+        color: #B91C1C;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .btn-d:hover {
+            opacity: .85;
+            color: #B91C1C;
+            text-decoration: none;
+        }
+
+    .empty {
+        padding: 32px;
+        text-align: center;
+        color: var(--soft);
+        font-size: 12px;
+    }
+    /* form */
+    .form-inner {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+        .field label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .field input, .field textarea, .field select {
+            width: 100%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 12px;
+            color: var(--text);
+            font-family: 'Nunito',sans-serif;
+        }
+
+        .field textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+            .field input:focus, .field textarea:focus, .field select:focus {
+                outline: none;
+                border-color: var(--c4);
+                background: var(--white);
+            }
+
+        .field span.text-danger {
+            font-size: 11px;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn-p {
+        background: var(--c5);
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Nunito',sans-serif;
+    }
+
+        .btn-p:hover {
+            opacity: .9;
+        }
+
+    .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 4px 0 16px;
+    }
+</style>
+
+<!-- ═══ BARRA DE TÍTULO ═══ -->
+<div class="page-bar">
+    <h1>Tips</h1>
+</div>
+
+<div class="content-area">
+
+    <!-- ═══ COLUMNA IZQUIERDA ═══ Tabla de tips + Formulario de creación -->
+    <div>
+        <!-- Tabla de tips -->
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-label">Tips registrados</span>
+            </div>
+            @if (Model.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="color:var(--soft)">@item.id</td>
+                                <td style="font-weight:600">@item.nombre</td>
+                                <td style="color:var(--muted)">
+                                    @{
+                                        var tipo = ((List<Lumina_WEB.Models.tipoTip>)ViewBag.TipoTips)
+                                                    .FirstOrDefault(t => t.id == item.idTipoTips);
+                                    }
+                                    @(tipo != null ? tipo.nombre : "-")
+                                </td>
+                                <td style="color:var(--muted);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@item.descripcion</td>
+                                <td>
+                                    <div class="acts">
+                                        <a asp-controller="Tip" asp-action="Editar" asp-route-id="@item.id" class="btn-s">Editar</a>
+
+                                        @* Antes era un <a> (GET) y por eso no borraba nada.
+                                           Ahora es un <form> POST con confirmación. *@
+                                        <form asp-controller="Tip" asp-action="Eliminar" asp-route-id="@item.id" method="post" style="display:inline" onsubmit="return confirm('¿Eliminar este tip?')">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-d">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty">No hay tips registrados aún.</div>
+            }
+        </div>
+
+        <!-- Form nuevo tip -->
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-label">Nuevo tip</span>
+            </div>
+            <form asp-controller="Tip" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-inner">
+                    <div class="field">
+                        <label>Nombre</label>
+                        <input name="nombre" />
+                    </div>
+                    <div class="field">
+                        <label>Tipo de tip</label>
+                        <select name="idTipoTips">
+                            <option value="">-- Seleccionar tipo --</option>
+                            @foreach (var tipo in (List<Lumina_WEB.Models.tipoTip>)ViewBag.TipoTips)
+                            {
+                                <option value="@tipo.id">@tipo.nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Descripción</label>
+                        <textarea name="descripcion"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="reset" class="btn-s">Limpiar</button>
+                        <button type="submit" class="btn-p">Guardar tip</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══ COLUMNA DERECHA ═══ Tipos de tip (categorías) -->
+    <div>
+        <!-- Tabla de tipos -->
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-label">Tipos de tip</span>
+            </div>
+            @if (((List<Lumina_WEB.Models.tipoTip>)ViewBag.TipoTips).Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tipo in (List<Lumina_WEB.Models.tipoTip>)ViewBag.TipoTips)
+                        {
+                            <tr>
+                                <td style="font-weight:600">@tipo.nombre</td>
+                                <td>
+                                    <div class="acts">
+                                        <a asp-controller="TipoTip" asp-action="Editar" asp-route-id="@tipo.id" class="btn-s">Editar</a>
+
+                                        @* Antes era un <a> (GET) y por eso no borraba nada.
+                                           Ahora es un <form> POST con confirmación. *@
+                                        <a asp-controller="TipoTip" asp-action="Eliminar" asp-route-id="@tipo.id" class="btn-d">×</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty">No hay tipos registrados.</div>
+            }
+        </div>
+
+        <!-- Form nuevo tipo -->
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-label">Nuevo tipo de tip</span>
+            </div>
+            <form asp-controller="TipoTip" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-inner">
+                    <div class="field">
+                        <label>Nombre</label>
+                        <input name="nombre" />
+                    </div>
+                    <div class="field">
+                        <label>Descripción</label>
+                        <textarea name="descripcion"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="reset" class="btn-s">Limpiar</button>
+                        <button type="submit" class="btn-p">Guardar tipo</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

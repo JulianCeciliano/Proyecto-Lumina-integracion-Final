@@ -1,0 +1,309 @@
+﻿@model IEnumerable<Lumina_WEB.Models.ViewModels.PerfilViewModel>
+@{
+    ViewData["Title"] = "Cuentas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var total = Model != null ? Model.Count() : 0;
+}
+
+<style>
+    .cu-page-bar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: -88px -32px 24px;
+    }
+
+    .cu-page-bar h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0;
+    }
+
+    .cu-wrap { width: 100%; padding: 0 8px 60px; }
+
+    .cu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @@media (max-width: 1300px) { .cu-grid { grid-template-columns: repeat(3, 1fr); } }
+    @@media (max-width: 1000px) { .cu-grid { grid-template-columns: repeat(2, 1fr); } }
+    @@media (max-width: 600px) { .cu-grid { grid-template-columns: 1fr; } }
+
+    .cu-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform .15s, box-shadow .15s;
+    }
+
+    .cu-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(61, 31, 26, .08); }
+
+    .cu-card .top { height: 6px; background: linear-gradient(90deg, var(--c4), var(--border)); }
+
+    .cu-card-body { padding: 18px 18px 16px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+    .cu-row { display: flex; align-items: center; gap: 12px; }
+
+    .cu-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--c4), var(--border));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .cu-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .cu-num { margin-left: auto; font-size: 10px; font-weight: 800; color: var(--soft); letter-spacing: .08em; }
+
+    .cu-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text); line-height: 1.2; }
+    .cu-email { font-size: 12px; color: var(--muted); word-break: break-all; }
+
+    .cu-fields { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+
+    .cu-field { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+    .cu-field .lbl { font-size: 9px; font-weight: 800; color: var(--soft); text-transform: uppercase; letter-spacing: .08em; }
+    .cu-field .val { font-size: 12px; color: var(--text); font-weight: 600; text-align: right; }
+
+    .cu-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 12px; }
+
+    .btn-s {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-s:hover { background: var(--bg); color: var(--muted); text-decoration: none; }
+
+    .btn-d {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #FEE2E2;
+        border: 1px solid #FECACA;
+        color: #B91C1C;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-d:hover { opacity: .85; color: #B91C1C; }
+
+    .cu-empty { background: var(--white); border: 1.5px dashed var(--border); border-radius: 14px; padding: 56px 24px; text-align: center; }
+    .cu-empty .ico { font-size: 44px; margin-bottom: 10px; }
+    .cu-empty h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--text); font-weight: 600; margin-bottom: 6px; }
+    .cu-empty p { font-size: 12px; color: var(--soft); margin-bottom: 0; }
+
+    /* ── MODAL DE CONFIRMACIÓN ── */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(61, 31, 26, .45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+    }
+
+    .modal-overlay.activo { display: flex; }
+
+    .modal-box {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 24px;
+        width: 90%;
+        max-width: 360px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(61, 31, 26, .18);
+    }
+
+    .modal-icono { font-size: 28px; margin-bottom: 8px; }
+
+    .modal-titulo { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+
+    .modal-texto { font-size: 12px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+    .modal-texto strong { color: var(--text); }
+
+    .modal-acciones { display: flex; gap: 8px; justify-content: center; }
+
+    .btn-cancelar-modal {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-cancelar-modal:hover { background: var(--bg); }
+
+    .btn-confirmar-eliminar {
+        background: #B91C1C;
+        border: none;
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-confirmar-eliminar:hover { opacity: .9; }
+</style>
+
+<div class="cu-page-bar">
+    <h1>Cuentas</h1>
+    <a asp-controller="Cuenta" asp-action="Create" class="btn btn-lumina btn-sm fw-bold">+ Nueva cuenta</a>
+</div>
+
+<div class="cu-wrap">
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="cu-grid">
+            @foreach (var item in Model)
+            {
+                var tienePerfil = item.Usuario != null;
+                var inicial = tienePerfil && !string.IsNullOrEmpty(item.Usuario.nombre) ? item.Usuario.nombre[0].ToString() : "?";
+                var nombreCompleto = tienePerfil ? (item.Usuario.nombre + " " + item.Usuario.apellido).Trim() : "Perfil no configurado";
+
+                <div class="cu-card">
+                    <div class="top"></div>
+                    <div class="cu-card-body">
+                        <div class="cu-row">
+                            <div class="cu-avatar">
+                                @if (tienePerfil && !string.IsNullOrEmpty(item.Usuario.urlFotoPerfil))
+                                {
+                                    <img src="@Url.Content(item.Usuario.urlFotoPerfil)" alt="Foto de perfil" />
+                                }
+                                else
+                                {
+                                    @inicial
+                                }
+                            </div>
+                            <div class="cu-num">#@item.Cuenta.Id.ToString("000")</div>
+                        </div>
+
+                        <div class="cu-name">@nombreCompleto</div>
+                        <div class="cu-email">@item.Cuenta.Email</div>
+
+                        <div class="cu-fields">
+                            @if (tienePerfil)
+                            {
+                                <div class="cu-field">
+                                    <span class="lbl">Usuario</span>
+                                    <span class="val">@(item.Usuario.nombre + " " + item.Usuario.apellido)</span>
+                                </div>
+                                <div class="cu-field">
+                                    <span class="lbl">Nacimiento</span>
+                                    <span class="val">@item.Usuario.fechaNacimiento.ToString("dd MMM yyyy")</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="cu-field">
+                                    <span class="lbl">Usuario</span>
+                                    <span class="val" style="color:var(--soft)">Sin perfil</span>
+                                </div>
+                            }
+                            <div class="cu-field">
+                                <span class="lbl">Creada</span>
+                                <span class="val">@item.Cuenta.FechaCreacion.ToString("dd MMM yyyy")</span>
+                            </div>
+                        </div>
+
+                        <div class="cu-actions">
+                        
+                            <button type="button"
+                                    class="btn-d"
+                                    onclick="abrirModalEliminar('@item.Cuenta.Id', '@item.Cuenta.Email')">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="cu-empty">
+            <div class="ico">🗝️</div>
+            <h3>No hay cuentas registradas</h3>
+            <p>Crea la primera cuenta para comenzar.</p>
+        </div>
+    }
+
+</div>
+
+@*
+ *  Modal de confirmación reutilizado para todas las cards.
+ *  Al hacer clic en "Eliminar" se llena con el Id/Email de esa cuenta.
+ *  Al confirmar, se envía el formulario oculto hacia Eliminar del CuentaController.
+ *@
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box">
+        <div class="modal-icono">⚠️</div>
+        <div class="modal-titulo">Eliminar cuenta</div>
+        <div class="modal-texto">
+            ¿Estás seguro de que querés eliminar la cuenta <strong id="modalEmailCuenta"></strong>?
+            Esta acción no se puede deshacer.
+        </div>
+        <div class="modal-acciones">
+            <button type="button" class="btn-cancelar-modal" onclick="cerrarModalEliminar()">
+                Cancelar
+            </button>
+            <button type="button" class="btn-confirmar-eliminar" onclick="confirmarEliminar()">
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<form id="formEliminarCuenta" asp-controller="Cuenta" asp-action="Eliminar" method="post" style="display:none">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="idCuentaAEliminar" />
+</form>
+
+<script>
+    function abrirModalEliminar(id, email) {
+        document.getElementById('idCuentaAEliminar').value = id;
+        document.getElementById('modalEmailCuenta').textContent = email;
+        document.getElementById('modalEliminar').classList.add('activo');
+    }
+
+    function cerrarModalEliminar() {
+        document.getElementById('modalEliminar').classList.remove('activo');
+    }
+
+    function confirmarEliminar() {
+        document.getElementById('formEliminarCuenta').submit();
+    }
+
+    document.getElementById('modalEliminar').addEventListener('click', function (e) {
+        if (e.target === this) {
+            cerrarModalEliminar();
+        }
+    });
+</script>

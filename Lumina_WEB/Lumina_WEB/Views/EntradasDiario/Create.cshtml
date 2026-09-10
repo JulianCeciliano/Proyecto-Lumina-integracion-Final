@@ -1,0 +1,285 @@
+﻿@*
+ * ════════════════════════════════════════════════════
+ *  VISTA: Create.cshtml
+ *  
+ *  Muestra un formulario para crear una nueva entrada.
+ *  Cuando el usuario llena los datos y presiona "Guardar",
+ *  el formulario envía los datos al método Create (POST)
+ *  del controlador EntradasDiarioController.
+ * ════════════════════════════════════════════════════
+ *@
+
+@*
+ * El modelo de esta vista es "EntradaDiario"
+ * Los campos que el usuario llena son: Titulo, IdEstadoAnimo, Contenido
+ * (FechaCreacion la asigna el servidor automáticamente, no el usuario)
+ *@
+@model Lumina_WEB.Models.EntradaDiario
+
+@{
+    ViewData["Title"] = "Nueva Entrada";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px 60px
+    }
+
+    /* ── ESTILOS DEL PANEL ── */
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 14px
+    }
+
+    .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .panel-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text)
+    }
+
+    /* ── ESTILOS DEL FORMULARIO ── */
+    .form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 18px
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px
+    }
+
+    label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .05em
+    }
+
+    .inp {
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 12px;
+        color: var(--text);
+        width: 100%
+    }
+
+    .inp.on {
+        border-color: var(--c4);
+        background: var(--white)
+    }
+
+    .field-error {
+        font-size: 10px;
+        color: #B91C1C;
+        font-weight: 600;
+    }
+
+    .validation-summary {
+        background: #FEE2E2;
+        border: 1px solid #F87171;
+        color: #B91C1C;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 11px;
+        margin: 0 18px;
+    }
+
+    .form-actions {
+        grid-column: 1/-1;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 8px;
+        border-top: 1px solid var(--border)
+    }
+
+    /* ── ESTILOS DE LOS BOTONES ── */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 14px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer
+    }
+
+    .btn-p {
+        background: var(--c5);
+        color: #fff
+    }
+
+    .btn-s {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted)
+    }
+</style>
+
+<script>
+    /*
+     * Función para contar palabras en el textarea
+     * y mostrar el contador en tiempo real
+     * Límite máximo: 500 palabras
+     */
+    function contarPalabras(textarea) {
+        var texto = textarea.value.trim();
+        var palabras = texto.length === 0 ? 0 : texto.split(/\s+/).length;
+        var contador = document.getElementById('contadorPalabras');
+
+        if (palabras > 500) {
+            // Si excede 500, limitamos el texto
+            var palabrasArray = texto.split(/\s+/);
+            palabrasArray = palabrasArray.slice(0, 500);
+            textarea.value = palabrasArray.join(' ');
+            palabras = 500;
+        }
+
+        contador.textContent = palabras + ' / 500 palabras';
+
+        // Cambiar color si está cerca del límite
+        if (palabras > 450) {
+            contador.style.color = '#B91C1C';
+        } else if (palabras > 400) {
+            contador.style.color = '#92400E';
+        } else {
+            contador.style.color = 'var(--soft)';
+        }
+    }
+</script>
+
+
+<div class="panel">
+
+    <div class="panel-head">
+        <span class="panel-label">✏️ Nueva entrada</span>
+    </div>
+
+    @*
+     * Muestra errores generales de validación (si los hay)
+     * Por ejemplo si algo falló que no está atado a un campo específico
+     *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="validation-summary">
+            <div asp-validation-summary="ModelOnly"></div>
+        </div>
+    }
+
+    @*
+     * FORMULARIO
+     * 
+     * asp-action="Create" → cuando se envía, llama al método Create del controlador
+     * method="post"       → usa el método HTTP POST (para enviar datos)
+     * 
+     * El "asp-for" conecta cada campo del formulario
+     * con una propiedad del modelo "EntradaDiario"
+     *@
+    <form asp-action="Create" method="post">
+
+        <div class="form">
+
+            <!--
+              CAMPO: Título
+              asp-for="Titulo"  → se conecta con la propiedad "Titulo" del modelo EntradaDiario
+              type="text"       → es una caja de texto normal
+            -->
+            <div class="field">
+                <label>Título de la entrada</label>
+                <input asp-for="Titulo"
+                       type="text"
+                       class="inp on"
+                       placeholder="Escribe el título aquí..." />
+                <span asp-validation-for="Titulo" class="field-error"></span>
+            </div>
+
+            <!--
+              CAMPO: Estado de ánimo
+              asp-for="IdEstadoAnimo" → se conecta con la propiedad "IdEstadoAnimo" del modelo
+              Es un <select> (lista desplegable) con opciones desde la base de datos
+            -->
+            <div class="field">
+                <label>Estado de ánimo</label>
+                <select asp-for="IdEstadoAnimo" class="inp">
+                    <option value="">-- Selecciona --</option>
+                    @foreach (var estado in ViewBag.EstadosAnimo)
+                    {
+                        <option value="@estado.Id">@estado.Emoji @estado.Nombre</option>
+                    }
+                </select>
+                <span asp-validation-for="IdEstadoAnimo" class="field-error"></span>
+            </div>
+
+            <!--
+              CAMPO: Contenido (descripción larga)
+              asp-for="Contenido" → se conecta con la propiedad "Contenido" del modelo
+              Es un textarea con límite de 500 palabras
+            -->
+            <div class="field">
+                <label>Contenido <span style="color:var(--soft);font-weight:400;text-transform:none">(máx. 500 palabras)</span></label>
+                <textarea asp-for="Contenido"
+                          class="inp on"
+                          rows="8"
+                          placeholder="Escribe aquí el contenido de tu entrada..."
+                          oninput="contarPalabras(this)"
+                          style="resize:vertical;min-height:120px;font-family:'Nunito',sans-serif;line-height:1.5"></textarea>
+                <div id="contadorPalabras" style="text-align:right;font-size:9px;color:var(--soft);margin-top:2px">0 / 500 palabras</div>
+                <span asp-validation-for="Contenido" class="field-error"></span>
+            </div>
+
+            @*
+             * NOTA: el campo de Fecha se quitó del formulario a propósito.
+             * El servidor siempre asigna FechaCreacion = DateTime.Now al guardar,
+             * así que no tiene sentido dejar que el usuario la elija (ver nota de Aldo
+             * en el controlador). Si en algún momento se necesita editar la fecha
+             * manualmente, hay que quitar el ModelState.Remove(FechaCreacion) del
+             * controlador y agregar el campo de vuelta aquí.
+             *@
+
+            <!--
+              BOTONES DEL FORMULARIO
+              Cancelar → vuelve al Index sin guardar
+              Guardar  → envía el formulario al controlador
+            -->
+            <div class="form-actions">
+                <a asp-action="Index"
+                   class="btn btn-s">
+                    Cancelar
+                </a>
+                <button type="submit"
+                        class="btn btn-p">
+                    💾 Guardar entrada
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

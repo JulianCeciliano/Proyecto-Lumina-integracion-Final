@@ -1,0 +1,33 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+
+# Test results and code-coverage reports
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Visual Studio and JetBrains user-specific settings
+.vs/
+.idea/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+*.sln.iml
+
+# Generated repository-analysis output
+/graphify-out/
+
+# Local-only configuration
+appsettings.Local.json
+appsettings.*.local.json
+
+# Operating-system clutter
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/

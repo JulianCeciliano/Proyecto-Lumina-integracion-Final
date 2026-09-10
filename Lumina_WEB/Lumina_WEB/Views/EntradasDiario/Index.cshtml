@@ -1,0 +1,418 @@
+﻿<!--
+    VISTA: Index.cshtml
+    Recibe una lista de objetos "Diario" desde el controlador.
+    Muestra:
+      1. Un resumen del mes con tarjetas
+      2. Una tabla con todas las entradas
+      3. Un sidebar con las últimas 4 entradas
+-->
+
+<!--
+    La palabra "model" indica qué tipo de datos recibe esta vista.
+    List<Diario> significa que recibiremos una lista de objetos Diario.
+-->
+@model List<Lumina_WEB.Models.EntradaDiario>
+
+@{
+    // ViewData sirve para pasar información al layout (la plantilla general)
+    ViewData["Title"] = "DIARIO - ENTRADAS";
+}
+
+<style>
+    :root{
+      --bg:#FFF4F0;--white:#fff;--border:#F9BD91;
+      --c1:#FEF0EB;--c4:#F58A72;--c5:#F2776E;
+      --text:#3D1F1A;--muted:#7A4035;--soft:#C48070;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+    .wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+
+    /* ESTILOS DEL HEADER */
+    .pg-title{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--text);margin-bottom:4px}
+    .pg-sub{font-size:11px;color:var(--soft);margin-bottom:48px}
+
+    /* ESTILOS DE LOS MÓDULOS (CADA SECCIÓN) */
+    .mod{margin-bottom:56px}
+    .mod-title{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c5);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+    .mod-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    /* ESTILOS DEL PANEL (CONTENEDOR PRINCIPAL) */
+    .panel{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border)}
+    .panel-label{font-size:12px;font-weight:700;color:var(--text)}
+    .panel-body{padding:18px}
+
+    /* ESTILOS DE LA TABLA */
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;font-size:9.5px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;border-bottom:1.5px solid var(--border)}
+    td{padding:10px 12px;border-bottom:1px solid var(--bg);font-size:12px;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--bg)}
+
+    /* ESTILOS DE LOS BOTONES */
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer}
+    .btn-p{background:var(--c5);color:#fff}
+    .btn-s{background:var(--white);border:1.5px solid var(--border);color:var(--muted)}
+    .btn-d{background:#FEE2E2;color:#B91C1C}
+    .btn-xs{padding:4px 10px;font-size:10px;border-radius:5px}
+    .acts{display:flex;gap:5px}
+
+    /* ESTILOS DE LAS BADGES (ETIQUETAS) */
+    .b{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
+    .b-gr{background:#D1FAE5;color:#065F46}
+    .b-ye{background:#FEF3C7;color:#92400E}
+
+    /* ESTILOS DE LA PAGINACIÓN */
+    .pag{display:flex;gap:4px;justify-content:flex-end;padding:12px 18px 14px;border-top:1px solid var(--bg)}
+    .pg{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted);background:var(--bg);border:1px solid var(--border)}
+    .pg.on{background:var(--c5);color:#fff;border-color:var(--c5)}
+
+    /* ESTILOS DE LAS TARJETAS DE RESUMEN */
+    .res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:18px}
+    .res-card{background:var(--bg);border-radius:10px;padding:14px 12px;text-align:center;border:1px solid var(--border)}
+    .res-card .ico{font-size:22px;margin-bottom:4px}
+    .res-card .val{font-size:20px;font-weight:800;color:var(--text);line-height:1.2}
+    .res-card .lbl{font-size:9px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+    .res-card.accent{background:var(--c5);border-color:var(--c5)}
+    .res-card.accent .val{color:#fff}
+    .res-card.accent .lbl{color:rgba(255,255,255,.75)}
+
+    /* ESTILOS DE LAS TARJETAS DE ENTRADAS (SIDEBAR) */
+    .entry-card{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border-bottom:1px solid var(--bg);cursor:pointer}
+    .entry-card:last-child{border-bottom:none}
+    .entry-card:hover{background:var(--bg)}
+    .entry-emoji{width:36px;height:36px;border-radius:50%;background:var(--c1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .entry-info{flex:1;min-width:0}
+    .entry-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:2px}
+    .entry-excerpt{font-size:11px;color:var(--soft);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .entry-meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:9.5px;color:var(--muted)}
+    .entry-meta .date{font-weight:600}
+    .entry-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+    .entry-right .word-count{font-size:9px;color:var(--soft);font-weight:600}
+
+    /* ESTILO PARA DIVIDIR LA PANTALLA EN DOS COLUMNAS */
+    .split{display:grid;grid-template-columns:1fr 360px;gap:14px}
+
+    /* ESTILOS DEL POPUP DE ALERTA */
+    .pop-overlay{position:fixed;inset:0;background:rgba(61,31,26,.45);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .2s}
+    .pop-overlay.show{opacity:1;pointer-events:auto}
+    .pop-card{background:#fff;border-radius:16px;padding:28px 30px;max-width:400px;width:90%;text-align:center;box-shadow:0 24px 60px rgba(61,31,26,.3);transform:translateY(12px);transition:transform .2s}
+    .pop-overlay.show .pop-card{transform:translateY(0)}
+    .pop-ico{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
+    .pop-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:8px}
+    .pop-msg{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:20px}
+    .pop-btn{border:none;border-radius:10px;padding:10px 26px;font-size:12px;font-weight:700;color:#fff;cursor:pointer}
+</style>
+
+
+
+
+@{
+    /*
+     * Calculos para el resumen usando los datos de la lista
+     * Count: cuenta cuantos elementos hay en la lista
+     * Model.Count() = numero total de entradas
+     */
+    var totalEntradas = Model.Count();
+
+    /*
+     * Tomamos solo las entradas del mes actual
+     * para calcular las estadisticas
+     */
+    var entradasEsteMes = Model.Where(e => e.FechaCreacion.Month == DateTime.Now.Month 
+                                        && e.FechaCreacion.Year == DateTime.Now.Year).ToList();
+
+    // Contamos las entradas del mes que tienen alerta real (ContieneAlerta)
+    var alertasActivas = entradasEsteMes.Count(e => e.ContieneAlerta);
+
+    /*
+     * Calculamos el estado de animo mas frecuente del mes
+     * Agrupamos por IdEstadoAnimo, ordenamos por cantidad descendente
+     * y tomamos el primero (el mas repetido)
+     */
+    var idAnimoFrecuente = entradasEsteMes
+        .GroupBy(e => e.IdEstadoAnimo)
+        .OrderByDescending(g => g.Count())
+        .Select(g => g.Key)
+        .FirstOrDefault();
+
+    // Buscamos el estado de ánimo en la lista de estados
+    var estadosList = ViewBag.EstadosAnimo as List<Lumina_WEB.Models.EstadoAnimo>;
+    var estadoAnimoFrecuente = estadosList != null ? estadosList.FirstOrDefault(e => e.Id == idAnimoFrecuente) : null;
+    var emojiFrecuente = estadoAnimoFrecuente != null ? estadoAnimoFrecuente.Emoji : "😊";
+    var nombreAnimoFrecuente = estadoAnimoFrecuente != null ? estadoAnimoFrecuente.Nombre : "Neutral";
+
+    /*
+     * Calculamos los dias seguidos que el usuario ha escrito
+     * Ordenamos las fechas de la mas reciente a la mas antigua
+     */
+    var fechas = entradasEsteMes.Select(e => e.FechaCreacion.Date).Distinct().OrderByDescending(f => f).ToList();
+    int racha = 1; // Minimo 1 dia
+    for (int i = 0; i < fechas.Count - 1; i++)
+    {
+        // Si la fecha de hoy es un dia despues de la fecha de ayer, la racha continua
+        if ((fechas[i] - fechas[i + 1]).Days == 1)
+        {
+            racha++;
+        }
+        else
+        {
+            break; // Se rompio la racha
+        }
+    }
+}
+
+<div class="mod">
+    <div class="mod-title">Diario — Resumen del mes</div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <span class="panel-label">📊 Resumen · @DateTime.Now.ToString("MMMM yyyy")</span>
+        </div>
+
+        <!-- Contenedor de las 4 tarjetas de resumen -->
+        <div class="res-grid">
+
+            <!-- Tarjeta 1: Total de entradas (destacada en color) -->
+            <div class="res-card accent">
+                <div class="ico">📝</div>
+                <div class="val">@totalEntradas</div>
+                <div class="lbl">Total entradas</div>
+            </div>
+
+            <!-- Tarjeta 2: Estado de animo mas frecuente (calculado dinamicamente) -->
+            <div class="res-card">
+                <div class="ico">@emojiFrecuente</div>
+                <div class="val">@nombreAnimoFrecuente</div>
+                <div class="lbl">Animo frecuente</div>
+            </div>
+
+            <!-- Tarjeta 3: Dias seguidos escribiendo -->
+            <div class="res-card">
+                <div class="ico">🔥</div>
+                <div class="val">@racha</div>
+                <div class="lbl">Dias seguidos</div>
+            </div>
+
+            <!-- Tarjeta 4: Alertas activas -->
+            <div class="res-card">
+                <div class="ico">⚠️</div>
+                <div class="val">@alertasActivas</div>
+                <div class="lbl">Alertas activas</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ═══ SECCIÓN 1: RESUMEN DEL MES ═══ Tarjetas con estadísticas -->
+
+<!-- ═══ SECCIÓN 2: LISTADO DE ENTRADAS + SIDEBAR ═══ Tabla y últimas entradas -->
+
+<div class="mod">
+    <div class="mod-title">08 · Diario — Entradas</div>
+
+    <!-- split divide la pantalla: izquierda (tabla) y derecha (sidebar) -->
+    <div class="split">
+
+        <!-- COLUMNA IZQUIERDA: TABLA -->
+        <div class="panel">
+
+            <div class="panel-head">
+                <span class="panel-label">📋 Listado de entradas</span>
+
+                <!--
+                    Boton para crear una nueva entrada
+                    asp-action="Create" = va al metodo Create del controlador
+                    asp-controller="Diario" = controlador Diario
+                -->
+                <a asp-controller="EntradasDiario"
+                   asp-action="Create"
+                   class="btn btn-p btn-xs">
+                    + Nueva entrada
+                </a>
+            </div>
+
+            <!-- Tabla con las entradas del diario -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Titulo</th>
+                        <th>Estado animo</th>
+                        <th>Palabras</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!--
+                        foreach = por cada elemento en la lista
+                        var entrada = un elemento individual de tipo Diario
+                        Model = la lista completa que recibio la vista
+                    -->
+                    @foreach (var entrada in Model)
+                    {
+                        /*
+                         * Convertimos la fecha a un texto corto
+                         * Ejemplo: "14 Jun"
+                         */
+                        var fechaCorta = entrada.FechaCreacion.ToString("dd MMM");
+
+                        /*
+                         * Calculamos palabras aproximadas del contenido
+                         * Si hay contenido, contamos las palabras reales
+                         */
+                        var palabrasContenido = !string.IsNullOrEmpty(entrada.Contenido)
+                            ? entrada.Contenido.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length
+                            : 0;
+
+                        /*
+                         * Tomamos un extracto del contenido (primeros 80 caracteres)
+                         */
+                        var extractoContenido = !string.IsNullOrEmpty(entrada.Contenido)
+                            ? (entrada.Contenido.Length > 80 ? entrada.Contenido.Substring(0, 80) + "..." : entrada.Contenido)
+                            : "";
+
+                        <tr>
+                            <td style="color:var(--soft)">@entrada.Id</td>
+                            <td style="font-weight:700">@entrada.Titulo</td>
+                            <td>
+                                @{
+                                    var estado = estadosList != null ? estadosList.FirstOrDefault(e => e.Id == entrada.IdEstadoAnimo) : null;
+                                    if (estado != null)
+                                    {
+                                        @estado.Emoji @estado.Nombre
+                                    }
+                                }
+                            </td>
+                            <td>@palabrasContenido</td>
+                            <td style="color:var(--muted)">@fechaCorta</td>
+                            <td>
+                                <div class="acts">
+                                    <a asp-action="Edit"
+                                       asp-route-id="@entrada.Id"
+                                       class="btn btn-s btn-xs"
+                                       style="text-decoration:none">
+                                        Editar
+                                    </a>
+                                    <form asp-action="Delete"
+                                          asp-route-id="@entrada.Id"
+                                          method="post"
+                                          style="display:inline"
+                                          onsubmit="return confirm('¿Eliminar esta entrada?')">
+                                        @* Token anti-CSRF obligatorio para POST *@
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn btn-d btn-xs"
+                                                style="border:none;cursor:pointer">
+                                            ×
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Paginacion (solo decorativa) -->
+            <div class="pag">
+                <div class="pg">‹</div>
+                <div class="pg on">1</div>
+                <div class="pg">›</div>
+            </div>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: SIDEBAR DE ULTIMAS ENTRADAS -->
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-label">📰 Ultimas entradas</span>
+            </div>
+
+            <!--
+                Tomamos SOLO las primeras 4 entradas de la lista
+                Take(4) = toma solo 4 elementos
+            -->
+            @{
+                var ultimasEntradas = Model.Take(4).ToList();
+            }
+
+            <!--
+                foreach = por cada una de las ultimas entradas
+                creamos una tarjeta (entry-card) con su informacion
+            -->
+            @foreach (var entrada in ultimasEntradas)
+            {
+                /*
+                 * Tomamos el extracto del contenido
+                 * Si hay contenido, mostramos los primeros 80 caracteres
+                 * Si no hay contenido, mostramos el título como fallback
+                 */
+                var extracto = !string.IsNullOrEmpty(entrada.Contenido)
+                    ? (entrada.Contenido.Length > 80 ? entrada.Contenido.Substring(0, 80) + "..." : entrada.Contenido)
+                    : (entrada.Titulo.Length > 50 ? entrada.Titulo.Substring(0, 50) + "..." : entrada.Titulo);
+
+                var fechaLarga = entrada.FechaCreacion.ToString("dd MMM yyyy");
+                var palabras = !string.IsNullOrEmpty(entrada.Contenido)
+                    ? entrada.Contenido.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length
+                    : 0;
+
+                <div class="entry-card">
+                    <div class="entry-emoji">📝</div>
+                    <div class="entry-info">
+                        <div class="entry-title">@entrada.Titulo</div>
+                        <div class="entry-excerpt">@extracto</div>
+                        <div class="entry-meta">
+                            <span class="date">@fechaLarga</span>
+                        </div>
+                    </div>
+                    <div class="entry-right">
+                        <div class="b b-gr">✓</div>
+                        <div class="word-count">@palabras pal.</div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ═══ SECCIÓN 3: POPUP DE ALERTA ═══ Se muestra si hay alerta activa -->
+@if (TempData["AlertaNivel"] != null)
+{
+    var nivelPop = TempData["AlertaNivel"] as string ?? "Alerta";
+    var colorPop = TempData["AlertaColor"] as string ?? "#F2776E";
+    var mensajePop = TempData["AlertaMensaje"] as string ?? "";
+
+    <div id="popAlerta" class="pop-overlay" onclick="if (event.target === this) cerrarPopup()">
+        <div class="pop-card">
+            <div class="pop-ico" style="background:@colorPop">⚠️</div>
+            <div class="pop-title" style="color:@colorPop">Alerta @nivelPop</div>
+            <div class="pop-msg">@mensajePop</div>
+            <button type="button" class="pop-btn" style="background:@colorPop" onclick="cerrarPopup()">Entendido</button>
+        </div>
+    </div>
+}
+
+<script>
+    function cerrarPopup() {
+        var overlay = document.getElementById('popAlerta');
+        if (overlay) {
+            overlay.classList.remove('show');
+        }
+    }
+
+    // Al cargar la página, si hay un popup de alerta, lo mostramos
+    document.addEventListener('DOMContentLoaded', function () {
+        var overlay = document.getElementById('popAlerta');
+        if (overlay) {
+            overlay.classList.add('show');
+        }
+    });
+</script>

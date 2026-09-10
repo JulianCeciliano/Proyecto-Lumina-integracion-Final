@@ -1,0 +1,444 @@
+﻿@model Lumina_WEB.Models.ViewModels.PerfilViewModel
+@{
+    ViewData["Title"] = "Perfil de Usuario - Lúmina";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bootstrap 5 + fuentes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet" />
+
+    <!-- ================================================================
+         SECCIÓN 1: CSS
+         ================================================================ -->
+    <style>
+        :root {
+            --color-primary: #a33c36;
+            --color-primary-container: #f2776e;
+            --color-cream-bg: #FFF4F0;
+            --color-surface: #fff8f6;
+            --color-surface-card: #ffffff;
+            --color-on-surface: #2f140f;
+            --color-muted-text: #7A4035;
+            --color-soft-text: #C48070;
+            --color-outline-variant: #ddc0bd;
+            --color-cream-surface: #FEEEE8;
+            --color-success: #4CAF50;
+        }
+
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            background-color: var(--color-cream-bg);
+            color: var(--color-on-surface);
+            font-size: 13px;
+            min-height: 100vh;
+        }
+
+        .font-display { font-family: 'EB Garamond', serif; }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .warm-tint-shadow { box-shadow: 0 4px 20px rgba(180, 60, 50, 0.08); }
+
+        .profile-card {
+            background-color: var(--color-surface-card);
+            border: 1px solid var(--color-outline-variant);
+            border-radius: 0.75rem;
+            padding: 20px;
+        }
+
+        .avatar {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'EB Garamond', serif;
+            font-size: 48px;
+            color: #fff;
+            background: var(--color-primary-container);
+            overflow: hidden;
+        }
+
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 2;
+            transition: transform 0.15s ease;
+        }
+
+        .avatar-edit-badge:hover { transform: scale(1.1); }
+
+        .avatar-edit-badge .material-symbols-outlined { font-size: 18px; }
+
+        .avatar-status {
+            width: 20px;
+            height: 20px;
+            background: var(--color-success);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+        }
+
+        .info-box {
+            background-color: var(--color-cream-bg);
+            border: 1px solid var(--color-outline-variant);
+            border-radius: 0.5rem;
+            padding: 12px 14px;
+        }
+
+        .info-box .icon { color: var(--color-soft-text); font-size: 18px; }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-muted-text);
+        }
+
+        .campo-perfil {
+            background-color: var(--color-cream-bg);
+            border: 1px solid var(--color-outline-variant);
+            border-radius: 0.5rem;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--color-on-surface);
+            width: 100%;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .campo-perfil:focus {
+            outline: none;
+            border-color: var(--color-primary-container);
+            box-shadow: 0 0 0 3px rgba(242, 119, 110, 0.25);
+            background-color: #fff;
+        }
+
+        .section-header {
+            border-bottom: 1px solid var(--color-outline-variant);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-cream-surface);
+            color: var(--color-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-circle .material-symbols-outlined { font-size: 18px; }
+
+        .section-title {
+            font-family: 'EB Garamond', serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--color-on-surface);
+            margin: 0;
+        }
+
+        /* Barra flotante de guardado (se muestra al editar) */
+        #barraGuardar {
+            position: sticky;
+            bottom: 16px;
+            z-index: 1050;
+            display: none;
+            justify-content: flex-end;
+        }
+
+        #btnGuardar {
+            background-color: var(--color-success);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 22px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.35);
+        }
+
+        #btnGuardar:hover { filter: brightness(1.05); }
+        #btnGuardar:disabled { opacity: 0.7; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================================================================
+         SECCIÓN 2: HTML
+         Layout: Columna identidad (avatar) + Columna datos (formulario)
+         ================================================================ -->
+
+    <div class="container-fluid py-4 px-3 px-md-4">
+
+        <!-- Encabezado móvil -->
+        <div class="d-md-none d-flex align-items-center justify-content-between mb-4">
+            <a class="text-decoration-none text-on-surface" asp-controller="Home" asp-action="Index">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h1 class="font-display fs-4 mb-0">Perfil</h1>
+            <span class="d-inline-flex align-items-center justify-content-center rounded-circle text-white"
+                  style="width:40px;height:40px;background:var(--color-primary-container);">
+                <span class="material-symbols-outlined">account_circle</span>
+            </span>
+        </div>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" role="alert">@TempData["Error"]</div>
+        }
+
+        <!-- Formulario: guarda vía UsuarioController.Perfil (POST normal) -->
+        <form id="formPerfil" asp-controller="Usuario" asp-action="Perfil" method="post" enctype="multipart/form-data">
+            @Html.HiddenFor(m => m.Usuario.id)
+
+            <div class="row g-4">
+
+                <!-- Columna identidad -->
+                <div class="col-lg-4 d-flex flex-column gap-4">
+                    <div class="profile-card warm-tint-shadow text-center position-relative overflow-hidden">
+                        <div class="position-absolute top-0 start-0 w-100"
+                             style="height:96px;background:linear-gradient(to bottom, var(--color-cream-surface), transparent);opacity:.5;"></div>
+
+                        <div class="position-relative d-inline-block mt-4 mb-4">
+                            <div class="avatar">
+                                @if (!string.IsNullOrEmpty(Model.Usuario.urlFotoPerfil))
+                                {
+                                    <img id="imgAvatar" src="@Url.Content(Model.Usuario.urlFotoPerfil)" alt="Foto de perfil" />
+                                }
+                                else
+                                {
+                                    <span id="avatarInicial">@(string.IsNullOrEmpty(Model.Usuario.nombre) ? "U" : Model.Usuario.nombre[0].ToString())</span>
+                                }
+                            </div>
+                            <div class="avatar-status"></div>
+                            <label for="fotoPerfil" class="avatar-edit-badge" title="Cambiar foto">
+                                <span class="material-symbols-outlined">photo_camera</span>
+                            </label>
+                            <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*" class="d-none" />
+                        </div>
+
+                        <h2 class="font-display fs-2 mb-1" id="nombreCabecera">@Model.Usuario.nombre @Model.Usuario.apellido</h2>
+                        <p class="text-muted-text mb-0">Miembro desde @(Model.Cuenta != null ? Model.Cuenta.FechaCreacion.Year.ToString() : DateTime.Now.Year.ToString())</p>
+                    </div>
+                </div>
+
+                <!-- Columna datos -->
+                <div class="col-lg-8 d-flex flex-column gap-4">
+
+                    <!-- Información Personal -->
+                    <div class="profile-card warm-tint-shadow">
+                        <div class="section-header d-flex align-items-center gap-3">
+                            <div class="icon-circle"><span class="material-symbols-outlined">badge</span></div>
+                            <h3 class="section-title">Información Personal</h3>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="info-label d-block mb-2" for="nombre">Nombre</label>
+                                <input asp-for="Usuario.nombre" id="nombre" class="campo-perfil" />
+                                <span asp-validation-for="Usuario.nombre" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="info-label d-block mb-2" for="apellido">Apellidos</label>
+                                <input asp-for="Usuario.apellido" id="apellido" class="campo-perfil" />
+                                <span asp-validation-for="Usuario.apellido" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="info-label d-block mb-2" for="fechaNacimiento">Fecha de Nacimiento</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="material-symbols-outlined icon" style="color:var(--color-soft-text);">calendar_today</span>
+                                    <input asp-for="Usuario.fechaNacimiento" id="fechaNacimiento" type="date" class="campo-perfil" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="info-label d-block mb-2">Edad</label>
+                                <div class="info-box">
+                                    <span id="edadEstimada">calculando...</span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="info-label d-block mb-2" for="email">Correo Electrónico</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="material-symbols-outlined icon" style="color:var(--color-soft-text);">mail</span>
+                                    <input asp-for="Cuenta.Email" id="email" type="email" class="campo-perfil" readonly />
+                                    <span class="ms-auto badge rounded-pill" style="background:var(--color-cream-surface);color:var(--color-primary-container);font-size:11px;">Verificado</span>
+                                </div>
+                                <span asp-validation-for="Cuenta.Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración de Cuenta -->
+                    <div class="profile-card warm-tint-shadow">
+                        <div class="section-header d-flex align-items-center gap-3">
+                            <div class="icon-circle"><span class="material-symbols-outlined">lock</span></div>
+                            <h3 class="section-title">Configuración de Cuenta</h3>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="info-label d-block mb-2" for="password">Contraseña</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="password" id="password" name="Cuenta.password" class="campo-perfil"
+                                           value="@(Model.Cuenta != null ? Model.Cuenta.password : "")" />
+                                    <button type="button" id="togglePassword"
+                                            class="btn btn-link text-decoration-none p-0"
+                                            style="color:var(--color-soft-text);">
+                                        <span class="material-symbols-outlined">visibility</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Barra flotante: Guardar (solo aparece si hay cambios) -->
+        <div id="barraGuardar" class="d-flex">
+            <button type="submit" form="formPerfil" id="btnGuardar" class="btn">
+                <span class="material-symbols-outlined me-1" style="font-size:16px;">save</span>
+                Guardar cambios
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ================================================================
+         SECCIÓN 3: JS
+         - Cálculo de edad en vivo.
+         - Mostrar/ocultar contraseña.
+         - Detección de cambios → muestra el botón Guardar.
+         - Guardado vía POST normal → UsuarioController.Perfil.
+         ================================================================ -->
+    <script>
+        (function () {
+            'use strict';
+
+            const $ = (id) => document.getElementById(id);
+
+            /* ── Cálculo de edad (en vivo) ── */
+            function calcularEdad(fechaStr) {
+                const edadEl = $('edadEstimada');
+                if (!fechaStr) { edadEl.textContent = '—'; return; }
+                const nac = new Date(fechaStr + 'T00:00:00');
+                const hoy = new Date();
+                let edad = hoy.getFullYear() - nac.getFullYear();
+                const mes = hoy.getMonth() - nac.getMonth();
+                if (mes < 0 || (mes === 0 && hoy.getDate() < nac.getDate())) edad--;
+                edadEl.textContent = edad + ' años';
+            }
+            calcularEdad($('fechaNacimiento').value);
+            $('fechaNacimiento').addEventListener('input', () => calcularEdad($('fechaNacimiento').value));
+
+            /* ── Mostrar / ocultar contraseña ── */
+            const passInput = $('password');
+            const togglePass = $('togglePassword');
+            togglePass.addEventListener('click', function () {
+                const oculta = passInput.type === 'password';
+                passInput.type = oculta ? 'text' : 'password';
+                this.querySelector('.material-symbols-outlined').textContent = oculta ? 'visibility_off' : 'visibility';
+            });
+
+            /* ── Detección de cambios: muestra el botón Guardar ── */
+            const form = $('formPerfil');
+            const barraGuardar = $('barraGuardar');
+
+            // Solo los campos editables (excluye el token anti-falsificación)
+            const campos = Array.from(form.querySelectorAll('input[name]'))
+                .filter((c) => c.name !== '__RequestVerificationToken');
+
+            const valoresOriginales = {};
+            function cargarValoresOriginales() {
+                campos.forEach((campo) => { valoresOriginales[campo.name] = campo.value; });
+            }
+            cargarValoresOriginales();
+
+            function hayCambios() {
+                return campos.some((c) => c.value !== valoresOriginales[c.name]);
+            }
+
+            function actualizarBotonGuardar() {
+                barraGuardar.style.display = hayCambios() ? 'flex' : 'none';
+            }
+
+            campos.forEach((campo) => {
+                campo.addEventListener('input', () => {
+                    actualizarBotonGuardar();
+
+                    // Refrescar en vivo el nombre de la cabecera
+                    if (campo.name === 'Usuario.nombre' || campo.name === 'Usuario.apellido') {
+                        $('nombreCabecera').textContent = ($('nombre').value + ' ' + $('apellido').value).trim();
+                    }
+                });
+            });
+
+            /* ── Cambiar foto de perfil ── */
+            const fotoPerfilInput = $('fotoPerfil');
+            if (fotoPerfilInput) {
+                fotoPerfilInput.addEventListener('change', function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (ev) {
+                            let img = $('imgAvatar');
+                            if (!img) {
+                                const avatar = document.querySelector('.avatar');
+                                const inicial = $('avatarInicial');
+                                if (inicial) inicial.remove();
+                                img = document.createElement('img');
+                                img.id = 'imgAvatar';
+                                img.alt = 'Foto de perfil';
+                                avatar.appendChild(img);
+                            }
+                            img.src = ev.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    actualizarBotonGuardar();
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>

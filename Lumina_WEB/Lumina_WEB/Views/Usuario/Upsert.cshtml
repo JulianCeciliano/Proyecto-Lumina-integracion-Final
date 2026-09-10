@@ -1,0 +1,26 @@
+﻿@model Lumina_WEB.Models.ViewModels.UsuarioVM
+
+<form method="post">
+    <input type="hidden" asp-for="Usuario.id" />
+
+    <label>Nombre</label>
+    <input asp-for="Usuario.nombre" />
+
+    <label>Apellido</label>
+    <input asp-for="Usuario.apellido" />
+
+    <label>Fecha de nacimiento</label>
+    <input asp-for="Usuario.fechaNacimiento" type="date" />
+
+    <label>URL Foto Perfil</label>
+    <input asp-for="Usuario.urlFotoPerfil" />
+
+    <label>Cuenta</label>
+    <select asp-for="Usuario.idCuenta" asp-items="Model.CuentaLista">
+        <option value="">-- Selecciona una cuenta --</option>
+    </select>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<span asp-validation-summary="All"></span>

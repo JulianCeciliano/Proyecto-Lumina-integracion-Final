@@ -1,0 +1,243 @@
+﻿@*
+ * ════════════════════════════════════════════════════
+ *  VISTA: Create.cshtml (EstadoAnimo - Admin)
+ *  Convertida de Tailwind a Bootstrap 5.
+ *  Formulario para crear un nuevo estado emocional.
+ * ════════════════════════════════════════════════════
+ *@
+@model Lumina_WEB.Models.EstadoAnimo
+
+@{
+    ViewData["Title"] = "Gestión de Estados Emocionales - Lúmina";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --cream-bg: #FFF4F0;
+        --cream-surface: #FEEEE8;
+        --amber-highlight: #FEF0EB;
+        --border-c: #ddc0bd;
+        --primary: #a33c36;
+        --primary-container: #f2776e;
+        --on-surface: #2f140f;
+        --muted-text: #7A4035;
+        --soft-text: #C48070;
+        --outline: #8a716f;
+    }
+
+    body {
+        background-color: #fff8f6;
+        color: var(--on-surface);
+        font-family: 'Nunito Sans', sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .editorial-header { font-family: 'EB Garamond', serif; }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+    }
+
+    .form-card {
+        background: #fff;
+        border: 1.5px solid var(--border-c);
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    }
+
+    .field-label {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--muted-text);
+    }
+
+    .form-control-lumina {
+        background-color: var(--cream-bg);
+        border: 1px solid var(--border-c);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+    .form-control-lumina:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(242, 119, 110, .25);
+    }
+
+    .color-swatch-wrap {
+        width: 56px; height: 56px;
+        border-radius: 8px;
+        border: 1px solid var(--border-c);
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    .color-swatch-wrap input[type="color"] {
+        width: 150%; height: 150%;
+        transform: translate(-16%, -16%);
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-submit-lumina {
+        background-color: var(--primary);
+        color: #fff;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        font-size: 12px;
+        border: none;
+        transition: all .2s ease;
+        box-shadow: 0 4px 12px rgba(163,60,54,.2);
+    }
+    .btn-submit-lumina:hover { background-color: var(--primary-container); color: #fff; }
+    .btn-submit-lumina:active { transform: scale(.98); }
+
+    .btn-back {
+        color: var(--muted-text);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+    .btn-back:hover { color: var(--primary); }
+
+    .icon-badge {
+        width: 40px; height: 40px; border-radius: 50%;
+        background-color: var(--amber-highlight);
+        color: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    .field-error { font-size: 12px; color: #B91C1C; font-weight: 600; }
+
+    .validation-summary {
+        background: #FEE2E2;
+        border: 1px solid #F87171;
+        color: #B91C1C;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<main class="container py-5" style="max-width:960px;">
+
+    <!-- Header -->
+    <header class="mb-5 d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2" style="color:var(--primary);">
+                <span class="material-symbols-outlined fs-2">auto_awesome</span>
+                <span class="editorial-header fs-4">Lúmina Admin</span>
+            </div>
+            <h1 class="editorial-header mb-2" style="font-size:28px; font-weight:600;">Gestión de Estados Emocionales</h1>
+            <p class="mb-0" style="color:var(--soft-text); max-width:560px;">
+                Define y personaliza las emociones que los usuarios podrán registrar en su diario.
+                Crea una paleta de sentimientos coherente para el acompañamiento emocional.
+            </p>
+        </div>
+        <a asp-action="Index" class="btn-back d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Volver al panel
+        </a>
+    </header>
+
+    <!-- Formulario -->
+    <section class="d-flex justify-content-center">
+        <div class="form-card rounded-4 p-4 p-md-5 w-100" style="max-width:640px;">
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="icon-badge">
+                    <span class="material-symbols-outlined">add_reaction</span>
+                </div>
+                <h2 class="editorial-header mb-0" style="font-size:20px; font-weight:500;">Nuevo estado</h2>
+            </div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="validation-summary">
+                    <div asp-validation-summary="ModelOnly"></div>
+                </div>
+            }
+
+            <form asp-action="Create" method="post">
+
+                <!-- Nombre -->
+                <div class="mb-4">
+                    <label asp-for="Nombre" class="field-label mb-2 d-block">Nombre del estado</label>
+                    <input asp-for="Nombre" class="form-control form-control-lumina" placeholder="Ej. Serenidad" />
+                    <span asp-validation-for="Nombre" class="field-error"></span>
+                </div>
+
+                <!-- Emoji -->
+                <div class="mb-4">
+                    <label asp-for="Emoji" class="field-label mb-2 d-block">Emoji representativo</label>
+                    <input asp-for="Emoji" class="form-control form-control-lumina" placeholder="Ej. 😌" style="max-width:160px;" />
+                    <span asp-validation-for="Emoji" class="field-error"></span>
+                </div>
+
+                <!-- Color -->
+                <div class="mb-4">
+                    <label asp-for="ColorHex" class="field-label mb-2 d-block">Identificador visual (color)</label>
+                    <div class="d-flex gap-3">
+                        <div class="color-swatch-wrap">
+                            <input type="color" id="colorPicker" value="#f2776e" />
+                        </div>
+                        <input asp-for="ColorHex" id="hexCode" class="form-control form-control-lumina flex-grow-1 text-uppercase font-monospace" placeholder="#F2776E" style="height:56px;" />
+                    </div>
+                    <span asp-validation-for="ColorHex" class="field-error"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-4">
+                    <label asp-for="Descripcion" class="field-label mb-2 d-block">Descripción / guía</label>
+                    <textarea asp-for="Descripcion" class="form-control form-control-lumina" rows="4" placeholder="Describe brevemente qué representa este estado para el usuario..." style="resize:none;"></textarea>
+                    <span asp-validation-for="Descripcion" class="field-error"></span>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-submit-lumina w-100 d-flex align-items-center justify-content-center gap-2">
+                    <span class="material-symbols-outlined">save</span>
+                    Registrar estado emocional
+                </button>
+
+            </form>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Sincroniza el color picker con el input de texto hex
+        const colorPicker = document.getElementById('colorPicker');
+        const hexCode = document.getElementById('hexCode');
+
+        // Si ya hay un valor cargado en el input (ej. al volver por error de validación), lo reflejamos en el picker
+        if (hexCode.value && /^#[0-9A-F]{6}$/i.test(hexCode.value)) {
+            colorPicker.value = hexCode.value;
+        } else {
+            hexCode.value = colorPicker.value.toUpperCase();
+        }
+
+        colorPicker.addEventListener('input', (e) => {
+            hexCode.value = e.target.value.toUpperCase();
+        });
+
+        hexCode.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (/^#[0-9A-F]{6}$/i.test(val)) {
+                colorPicker.value = val;
+            }
+        });
+    </script>
+}

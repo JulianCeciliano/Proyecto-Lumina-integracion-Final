@@ -1,0 +1,15 @@
+﻿.login-card {
+
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-divider {
+
+    width: 50px;
+    height: 2px;
+
+    background-color: var(--lumina-primary-container);
+
+    margin: 1rem auto;
+}

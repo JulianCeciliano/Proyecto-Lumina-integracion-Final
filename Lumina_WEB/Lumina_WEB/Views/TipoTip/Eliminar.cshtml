@@ -1,0 +1,154 @@
+﻿@model Lumina_WEB.Models.tipoTip
+@{
+    ViewData["Title"] = "Eliminar tipo de tip";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-bar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .page-bar h1 {
+            font-family: 'Cormorant Garamond',serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+    .back-link {
+        color: var(--soft);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+    }
+
+        .back-link:hover {
+            color: var(--c5);
+            text-decoration: none;
+        }
+
+    .content-area {
+        padding: 24px;
+        max-width: 520px;
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .confirm-msg {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .data-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+        padding: 14px;
+        background: var(--bg);
+        border-radius: 8px;
+    }
+
+    .data-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--soft);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+    .data-value {
+        font-size: 13px;
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+    }
+
+    .btn-cancel {
+        background: var(--white);
+        color: var(--muted);
+        border: 1.5px solid var(--border);
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: var(--bg);
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #EF4444;
+        color: #fff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Nunito',sans-serif;
+    }
+
+        .btn-delete:hover {
+            opacity: .9;
+        }
+</style>
+
+<div class="page-bar">
+    <a class="back-link" asp-controller="Tip" asp-action="Index">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
+        Volver
+    </a>
+    <h1>Eliminar tipo de tip</h1>
+</div>
+
+<div class="content-area">
+    <div class="panel">
+        <p class="confirm-msg">¿Estás seguro de que deseas eliminar este tipo de tip? Esta acción no se puede deshacer.</p>
+        <div class="data-row">
+            <span class="data-label">Nombre</span>
+            <span class="data-value">@Model.nombre</span>
+        </div>
+        <div class="data-row">
+            <span class="data-label">Descripción</span>
+            <span class="data-value">@Model.descripcion</span>
+        </div>
+        <form asp-controller="TipoTip" asp-action="Eliminar" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="id" />
+            <div class="form-actions">
+                <a class="btn-cancel" asp-controller="Tip" asp-action="Index">Cancelar</a>
+                <button type="submit" class="btn-delete">Sí, eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>
+

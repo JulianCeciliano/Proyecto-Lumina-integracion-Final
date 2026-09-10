@@ -1,0 +1,191 @@
+﻿@model IEnumerable<Lumina_WEB.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-bar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .page-bar h1 {
+            font-family: 'Cormorant Garamond',serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+    .content-area {
+        padding: 24px;
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .panel-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        text-align: left;
+        font-size: 9.5px;
+        font-weight: 700;
+        color: var(--soft);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        padding: 8px 16px;
+        border-bottom: 1.5px solid var(--border);
+    }
+
+    td {
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--bg);
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover td {
+        background: var(--bg);
+    }
+
+    .acts {
+        display: flex;
+        gap: 6px;
+    }
+
+    .btn-lumina {
+        background: var(--c5);
+        color: #fff;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .btn-lumina:hover {
+            color: #fff;
+            text-decoration: none;
+            opacity: .9;
+        }
+
+    .btn-s {
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+    }
+
+        .btn-s:hover {
+            background: var(--bg);
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+    .btn-d {
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #FEE2E2;
+        border: 1px solid #FECACA;
+        color: #B91C1C;
+        text-decoration: none;
+    }
+
+        .btn-d:hover {
+            opacity: .85;
+            color: #B91C1C;
+            text-decoration: none;
+        }
+
+    .empty {
+        padding: 40px;
+        text-align: center;
+        color: var(--soft);
+        font-size: 13px;
+    }
+</style>
+
+<div class="page-bar">
+    <h1>Usuarios</h1>
+    <a asp-controller="Usuario" asp-action="Upsert" class="btn-lumina">+ Nuevo usuario</a>
+</div>
+
+<div class="content-area">
+    <div class="panel">
+        <div class="panel-head">
+            <span class="panel-label">Usuarios registrados</span>
+        </div>
+        @if (Model.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cuenta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="color:var(--soft)">@item.id</td>
+                            <td>@item.nombre</td>
+                            <td>@item.apellido</td>
+                            <td style="color:var(--muted)">@item.Cuenta?.Email</td>
+                            <td>
+                                <div class="acts">
+                                    <a asp-controller="Usuario" asp-action="Upsert" asp-route-id="@item.id" class="btn-s">Editar</a>
+                                    <a asp-controller="Usuario" asp-action="Eliminar" asp-route-id="@item.id" class="btn-d">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty">No hay usuarios registrados aún.</div>
+        }
+    </div>
+</div>

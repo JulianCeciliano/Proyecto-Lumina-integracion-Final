@@ -1,0 +1,192 @@
+﻿@*
+ * ════════════════════════════════════════════════════
+ *  VISTA: Delete.cshtml
+ *  
+ *  Muestra los datos de un ejercicio existente en modo
+ *  solo lectura y pide confirmación antes de eliminarlo.
+ *  Al confirmar, envía la solicitud al método Delete (POST)
+ *  del controlador EjerciciosController.
+ * ════════════════════════════════════════════════════
+ *@
+
+@*
+ * El modelo de esta vista es "Ejercicio"
+ * Solo se muestran los datos, no se editan
+ *@
+@model Lumina_WEB.Models.Ejercicio
+
+@{
+    ViewData["Title"] = "Eliminar Ejercicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px 60px
+    }
+
+    /* ── ESTILOS DEL PANEL ── */
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 14px
+    }
+
+    .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .panel-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text)
+    }
+
+    /* ── AVISO DE ADVERTENCIA ── */
+    .aviso {
+        margin: 18px;
+        background: #FEE2E2;
+        border: 1px solid #F87171;
+        color: #B91C1C;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* ── DATOS DE SOLO LECTURA ── */
+    .form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 0 18px 18px
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px
+    }
+
+    label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .05em
+    }
+
+    .valor-lectura {
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 12px;
+        color: var(--text);
+        width: 100%
+    }
+
+    .form-actions {
+        grid-column: 1/-1;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 8px;
+        border-top: 1px solid var(--border)
+    }
+
+    /* ── ESTILOS DE LOS BOTONES ── */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 14px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer
+    }
+
+    .btn-s {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted)
+    }
+
+    .btn-danger {
+        background: #B91C1C;
+        color: #fff;
+        border: none;
+    }
+</style>
+
+<div class="wrap">
+
+    <div class="panel">
+
+        <div class="panel-head">
+            <span class="panel-label">🗑️ Eliminar ejercicio</span>
+        </div>
+
+        @*
+         * Aviso de confirmación: le avisa al usuario que la acción
+         * no se puede deshacer antes de que confirme
+         *@
+        <div class="aviso">
+            ⚠️ ¿Estás seguro de que querés eliminar este ejercicio? Esta acción no se puede deshacer.
+        </div>
+
+        @*
+         * Muestra los datos del ejercicio en modo solo lectura,
+         * así el usuario confirma que está eliminando el correcto
+         *@
+        <div class="form">
+
+            <div class="field">
+                <label>Nombre del ejercicio</label>
+                <div class="valor-lectura">@Html.DisplayFor(model => model.Nombre)</div>
+            </div>
+
+            <div class="field">
+                <label>Descripción</label>
+                <div class="valor-lectura">@Html.DisplayFor(model => model.Descripcion)</div>
+            </div>
+
+            @*
+             * FORMULARIO
+             * 
+             * asp-action="Delete" → cuando se envía, llama al método Delete del controlador
+             * method="post"       → se usa POST (no GET) para que la eliminación
+             *                        no ocurra por accidente al recargar la página
+             * 
+             * El Id viaja oculto para que el controlador sepa cuál ejercicio borrar
+             *@
+            <form asp-action="Eliminar" method="post" style="grid-column:1/-1">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-actions">
+                    <a asp-action="Index"
+                       class="btn btn-s">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="btn btn-danger">
+                        🗑️ Eliminar ejercicio
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

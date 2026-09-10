@@ -1,0 +1,282 @@
+@model List<Lumina_WEB.Models.Recordatorio>
+
+@{
+    ViewData["Title"] = "Agenda Personal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var eventsJson = Model.Select(r => new
+    {
+        id = r.Id.ToString(),
+        title = r.Titulo,
+        start = r.Fecha.ToString("yyyy-MM-ddTHH:mm:ss"),
+        allDay = false,
+        display = "list-item",
+        color = r.Estado switch
+        {
+            "Completada" => "#10B981",
+            "Omitida" => "#EF4444",
+            _ => "#F2776E"
+        }
+    });
+}
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" />
+
+<style>
+    .fc .fc-daygrid-event {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+    }
+    .fc .fc-event-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "primary": "#a13e2a",
+                    "primary-container": "#e8735a",
+                    "on-primary-container": "#5f0e01",
+                    "surface": "#fff8f6",
+                    "surface-container": "#f6ecea",
+                    "surface-container-low": "#fbf1ef",
+                    "on-surface-variant": "#56423e",
+                    "border-peach": "#FFD5CC",
+                    "cream-bg": "#FFF5F3",
+                    "accent-soft": "#FFF0ED",
+                    "tertiary": "#904b36",
+                    "text-primary": "#3A1810",
+                    "text-soft": "#C48070",
+                    "text-muted": "#7A3828",
+                    "action-deep": "#C94F38"
+                },
+                "fontFamily": {
+                    "headline-md": ["Libre Caslon Text"],
+                    "headline-sm": ["Libre Caslon Text"],
+                    "body-lg": ["Nunito Sans"],
+                    "body-md": ["Nunito Sans"],
+                    "body-sm": ["Nunito Sans"],
+                    "label-caps": ["Nunito Sans"]
+                },
+                "fontSize": {
+                    "headline-md": ["26px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "headline-sm": ["18px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "body-md": ["11px", {"lineHeight": "1.35", "fontWeight": "700"}],
+                    "label-caps": ["10px", {"lineHeight": "1.2", "letterSpacing": "0.14em", "fontWeight": "700"}]
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    body {
+        background-color: #fff8f6;
+        color: #1f1b1a;
+        font-family: 'Nunito Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+    .warm-shadow {
+        box-shadow: 0 4px 20px rgba(100, 40, 0, 0.08);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #fbf1ef;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e8735a;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="p-8 overflow-y-auto custom-scrollbar">
+    <div class="max-w-[1600px] mx-auto grid grid-cols-12 gap-8">
+        <!-- Left Column: Calendar & Quick Add -->
+        <div class="col-span-12 lg:col-span-8 space-y-8">
+
+            <!-- Monthly Calendar View -->
+            <section class="bg-white rounded-3xl p-8 border border-border-peach warm-shadow">
+                <div id="calendar"></div>
+            </section>
+
+            <!-- Add New Reminder Form (Bento Style) -->
+            <section class="grid grid-cols-2 gap-6">
+             
+
+                <div class="col-span-2 md:col-span-1 bg-white rounded-3xl p-6 border border-border-peach flex flex-col gap-4">
+                    <h4 class="font-headline-sm text-headline-sm text-text-primary">Nuevo Recordatorio</h4>
+                    <form asp-action="Create" method="post" id="formNuevoRecordatorio">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Recordatorio.Fecha" id="Recordatorio_Fecha" value="" />
+                        <div class="space-y-3">
+                            <input name="Recordatorio.Titulo" class="w-full bg-cream-bg border-none rounded-xl py-3 px-4 text-sm focus:ring-2 focus:ring-primary-container" placeholder="¿Qué quieres recordar?" type="text" required />
+
+                            <textarea name="Recordatorio.Descripcion" class="w-full bg-cream-bg border-none rounded-xl py-3 px-4 text-sm focus:ring-2 focus:ring-primary-container resize-none" rows="2" placeholder="Descripción (opcional)"></textarea>
+
+                            <div class="flex gap-3">
+                                <div class="flex-1 relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-soft text-lg">event</span>
+                                    <input name="fechaTexto" class="w-full bg-cream-bg border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary-container" type="date" />
+                                </div>
+                                <div class="flex-1 relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-soft text-lg">schedule</span>
+                                    <input name="horaTexto" class="w-full bg-cream-bg border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary-container" type="time" />
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-soft text-lg">flag</span>
+                                <select name="Recordatorio.Estado" class="w-full bg-cream-bg border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary-container appearance-none">
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Completada">Completada</option>
+                                    <option value="Omitida">Omitida</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold text-sm hover:bg-action-deep transition-all">
+                                Añadir a la agenda
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+        </div>
+        <!-- Right Column: Daily Timeline & Reminders -->
+        <div class="col-span-12 lg:col-span-4 space-y-8">
+
+            <section class="bg-surface-container rounded-3xl p-8 border border-border-peach/30 h-full flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-headline-sm text-headline-sm text-text-primary">Hoy</h3>
+                    <span class="px-3 py-1 bg-white rounded-full text-[10px] font-bold text-primary border border-border-peach uppercase tracking-wide">
+                        @Model.Count(r => r.Estado == "Pendiente") PENDIENTES
+                    </span>
+                </div>
+                <div class="space-y-6 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                    @if (!Model.Any())
+                    {
+                        <p class="text-text-soft text-sm">Todavía no tienes recordatorios. ¡Agrega el primero abajo!</p>
+                    }
+                    @foreach (var r in Model)
+                    {
+                        <div class="flex gap-4 group">
+                            <div class="flex flex-col items-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-primary/10"></div>
+                                <div class="w-0.5 flex-1 bg-border-peach mt-2 mb-2"></div>
+                            </div>
+                            <div class="pb-6 flex-1">
+                                <p class="text-[11px] font-bold text-text-soft mb-1 uppercase tracking-wider">@r.Fecha.ToString("dd MMM · hh:mm tt")</p>
+                                <div class="bg-white p-4 rounded-2xl border border-border-peach warm-shadow group-hover:scale-[1.02] transition-transform">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <h5 class="font-body-lg text-text-primary flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">notifications</span>
+                                            @r.Titulo
+                                        </h5>
+                                        <div class="flex gap-1 shrink-0">
+                                            <a asp-action="Edit" asp-route-id="@r.Id" class="p-1 rounded-lg hover:bg-cream-bg text-text-soft hover:text-primary transition-colors" title="Editar">
+                                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@r.Id" method="post" class="inline"
+                                                  onsubmit="return confirm('¿Eliminar este recordatorio?')">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="p-1 rounded-lg hover:bg-cream-bg text-text-soft hover:text-red-500 transition-colors" title="Eliminar">
+                                                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(r.Descripcion))
+                                    {
+                                        <p class="font-body-sm text-text-muted mt-1 italic">@r.Descripcion</p>
+                                    }
+                                    <div class="mt-3 flex gap-2">
+                                        <span class="px-3 py-1.5 bg-cream-bg text-text-muted rounded-lg text-[10px] font-bold uppercase border border-border-peach">@r.Estado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar/core@6.1.15/locales/es.global.js"></script>
+
+<script>
+    const events = @Html.Raw(Json.Serialize(eventsJson));
+    const editUrlBase = '@Url.Action("Edit", "Recordatorio")';
+
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                height: 'auto',
+                defaultTimedEventDuration: '00:00:00',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listWeek'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    listWeek: 'Lista'
+                },
+                events: events,
+                eventClick: function (info) {
+                    window.location.href = editUrlBase + '?id=' + info.event.id;
+                }
+            });
+
+            calendar.render();
+        } catch (err) {
+            console.error('Error al iniciar FullCalendar:', err);
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formNuevoRecordatorio');
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+            const fecha = form.querySelector('[name="fechaTexto"]').value;
+            const hora = form.querySelector('[name="horaTexto"]').value;
+
+            if (!fecha) {
+                e.preventDefault();
+                alert('Elige una fecha para el recordatorio.');
+                return;
+            }
+
+            const valor = hora ? fecha + 'T' + hora + ':00' : fecha + 'T09:00:00';
+            document.getElementById('Recordatorio_Fecha').value = valor;
+        });
+    });
+</script>

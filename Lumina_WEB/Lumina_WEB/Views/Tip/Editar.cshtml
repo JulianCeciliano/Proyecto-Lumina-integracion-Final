@@ -1,0 +1,185 @@
+﻿@model Lumina_WEB.Models.Tip
+@{
+    ViewData["Title"] = "Editar tip";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-bar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .page-bar h1 {
+            font-family: 'Cormorant Garamond',serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+    .back-link {
+        color: var(--soft);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+    }
+
+        .back-link:hover {
+            color: var(--c5);
+            text-decoration: none;
+        }
+
+    .content-area {
+        padding: 24px;
+        max-width: 580px;
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .field {
+        margin-bottom: 14px;
+    }
+
+        .field label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 5px;
+        }
+
+        .field input, .field textarea, .field select {
+            width: 100%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 12px;
+            color: var(--text);
+            font-family: 'Nunito',sans-serif;
+        }
+
+        .field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+            .field input:focus, .field textarea:focus, .field select:focus {
+                outline: none;
+                border-color: var(--c4);
+                background: var(--white);
+            }
+
+        .field span.text-danger {
+            font-size: 11px;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+    }
+
+    .btn-p {
+        background: var(--c5);
+        color: #fff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Nunito',sans-serif;
+    }
+
+        .btn-p:hover {
+            opacity: .9;
+        }
+
+    .btn-cancel {
+        background: var(--white);
+        color: var(--muted);
+        border: 1.5px solid var(--border);
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: var(--bg);
+            color: var(--muted);
+            text-decoration: none;
+        }
+</style>
+
+<div class="page-bar">
+    <a class="back-link" asp-controller="Tip" asp-action="Index">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
+        Volver
+    </a>
+    <h1>Editar tip</h1>
+</div>
+
+<div class="content-area">
+    <div class="panel">
+        <form asp-action="Editar" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="id" />
+
+            <div class="field">
+                <label asp-for="nombre">Nombre</label>
+                <input asp-for="nombre" />
+                <span asp-validation-for="nombre" class="text-danger"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="idTipoTips">Tipo de tip</label>
+                <select asp-for="idTipoTips">
+                    <option value="">-- Seleccionar tipo --</option>
+                    @foreach (var tipo in (List<Lumina_WEB.Models.tipoTip>)ViewBag.TipoTips)
+                    {
+                        <option value="@tipo.id" selected="@(tipo.id == Model.idTipoTips)">@tipo.nombre</option>
+                    }
+                </select>
+                <span asp-validation-for="idTipoTips" class="text-danger"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="descripcion">Descripción</label>
+                <textarea asp-for="descripcion"></textarea>
+                <span asp-validation-for="descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <a class="btn-cancel" asp-controller="Tip" asp-action="Index">Cancelar</a>
+                <button type="submit" class="btn-p">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

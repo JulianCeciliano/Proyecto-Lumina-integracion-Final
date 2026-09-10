@@ -1,0 +1,216 @@
+@model Lumina_WEB.Models.Recordatorio
+
+@{
+    ViewData["Title"] = "Detalle de Recordatorio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --bg: #FFF4F0;
+        --white: #fff;
+        --border: #F9BD91;
+        --c1: #FEF0EB;
+        --c4: #F58A72;
+        --c5: #F2776E;
+        --text: #3D1F1A;
+        --muted: #7A4035;
+        --soft: #C48070;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 13px
+    }
+
+    .wrap {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 24px 80px
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden
+    }
+
+    .panel-head {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .panel-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text)
+    }
+
+    .panel-body {
+        padding: 20px
+    }
+
+    .detail-row {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--bg)
+    }
+
+    .detail-row:last-child {
+        border-bottom: none
+    }
+
+    .detail-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .05em
+    }
+
+    .detail-value {
+        font-size: 12px;
+        color: var(--text);
+        line-height: 1.6
+    }
+
+    .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-transform: capitalize
+    }
+
+    .badge-pendiente {
+        background: #FEF3C7;
+        color: #92400E
+    }
+
+    .badge-completada {
+        background: #D1FAE5;
+        color: #065F46
+    }
+
+    .badge-omitida {
+        background: #FEE2E2;
+        color: #991B1B
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        margin-top: 20px
+    }
+
+    .btn-cancel {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none
+    }
+
+    .btn-save {
+        background: var(--c5);
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none
+    }
+
+    .btn-save:hover {
+        background: #d66a5e
+    }
+</style>
+
+<div class="wrap">
+    <div class="panel">
+        <div class="panel-head">
+            <span class="panel-title">Detalle de recordatorio</span>
+        </div>
+
+        <div class="panel-body">
+            <!-- ID -->
+            <div class="detail-row">
+                <div class="detail-label">#</div>
+                <div class="detail-value" style="color:var(--soft)">@Model.Id</div>
+            </div>
+
+            <!-- Usuario -->
+        
+
+            <!-- Título -->
+            <div class="detail-row">
+                <div class="detail-label">Título</div>
+                <div class="detail-value">@Model.Titulo</div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="detail-row">
+                <div class="detail-label">Descripción</div>
+                <div class="detail-value">
+                    @if (!string.IsNullOrEmpty(Model.Descripcion))
+                    {
+                        @Model.Descripcion
+                    }
+                    else
+                    {
+                        <span style="color:var(--soft);font-style:italic">Sin descripción</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Fecha -->
+            <div class="detail-row">
+                <div class="detail-label">Fecha</div>
+                <div class="detail-value">@Model.Fecha.ToString("dd MMMM yyyy · HH:mm")</div>
+            </div>
+
+            <!-- Estado -->
+            <div class="detail-row">
+                <div class="detail-label">Estado</div>
+                <div class="detail-value">
+                    @{
+                        var badgeClass = Model.Estado switch
+                        {
+                            "Completada" => "badge-completada",
+                            "Omitida" => "badge-omitida",
+                            _ => "badge-pendiente"
+                        };
+                    }
+                    <span class="badge @badgeClass">@Model.Estado</span>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="form-actions">
+                <a asp-action="Index" class="btn-cancel">← Volver</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-save">✏️ Editar</a>
+            </div>
+        </div>
+    </div>
+</div>

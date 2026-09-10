@@ -1,0 +1,213 @@
+@model Lumina_WEB.Models.Recordatorio
+
+@{
+    ViewData["Title"] = "Nuevo Recordatorio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --bg: #FFF4F0;
+        --white: #fff;
+        --border: #F9BD91;
+        --c1: #FEF0EB;
+        --c4: #F58A72;
+        --c5: #F2776E;
+        --text: #3D1F1A;
+        --muted: #7A4035;
+        --soft: #C48070;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 13px
+    }
+
+    .wrap {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 24px 80px
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden
+    }
+
+    .panel-head {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border)
+    }
+
+    .panel-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text)
+    }
+
+    .panel-body {
+        padding: 20px
+    }
+
+    .form-group {
+        margin-bottom: 16px
+    }
+
+    .form-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px
+    }
+
+    .form-label .required {
+        color: var(--c5)
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--text);
+        font-family: 'Nunito', sans-serif
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--c4);
+        background: var(--white)
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.5
+    }
+
+    /* MENSAJES DE VALIDACIÓN */
+    .field-validation-error {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--c5);
+        margin-top: 5px
+    }
+
+    .input-validation-error {
+        border-color: var(--c5) !important;
+        background: #FFF0ED !important
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        margin-top: 20px
+    }
+
+    .btn-cancel {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none
+    }
+
+    .btn-save {
+        background: var(--c5);
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer
+    }
+
+    .btn-save:hover {
+        background: #d66a5e
+    }
+</style>
+
+<div class="wrap">
+    <div class="panel">
+        <div class="panel-head">
+            <span class="panel-title">Nuevo recordatorio</span>
+        </div>
+
+        <div class="panel-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Campo: Usuario -->
+                
+
+                <!-- Campo: Título -->
+                <div class="form-group">
+                    <label class="form-label">TÍTULO <span class="required">*</span></label>
+                    <input asp-for="Titulo"
+                           type="text"
+                           class="form-input"
+                           placeholder="Ej: Estudiar cálculo"
+                           required />
+                    <span asp-validation-for="Titulo" class="field-validation-error"></span>
+                </div>
+
+                <!-- Campo: Descripción -->
+                <div class="form-group">
+                    <label class="form-label">DESCRIPCIÓN</label>
+                    <textarea asp-for="Descripcion"
+                              class="form-textarea"
+                              placeholder="Repasar los temas del examen..."></textarea>
+                </div>
+
+                <!-- Campo: Fecha -->
+                <div class="form-group">
+                    <label class="form-label">FECHA <span class="required">*</span></label>
+                    <input asp-for="Fecha"
+                           type="datetime-local"
+                           class="form-input"
+                           required />
+                    <span asp-validation-for="Fecha" class="field-validation-error"></span>
+                </div>
+
+                <!-- Botones -->
+                <div class="form-actions">
+                    <a asp-action="Index" class="btn-cancel">Cancelar</a>
+                    <button type="submit" class="btn-save">Guardar</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

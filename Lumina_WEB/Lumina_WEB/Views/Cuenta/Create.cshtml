@@ -1,0 +1,160 @@
+﻿@model Lumina_WEB.Models.Cuenta
+@{
+    ViewData["Title"] = "Nueva cuenta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-bar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .page-bar h1 {
+            font-family: 'Cormorant Garamond',serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+    .back-link {
+        color: var(--soft);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+    }
+
+        .back-link:hover {
+            color: var(--c5);
+            text-decoration: none;
+        }
+
+    .content-area {
+        padding: 24px;
+        max-width: 520px;
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .field {
+        margin-bottom: 14px;
+    }
+
+        .field label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 5px;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 12px;
+            color: var(--text);
+            font-family: 'Nunito',sans-serif;
+        }
+
+            .field input:focus {
+                outline: none;
+                border-color: var(--c4);
+                background: var(--white);
+            }
+
+        .field span.text-danger {
+            font-size: 11px;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+    }
+
+    .btn-lumina {
+        background: var(--c5);
+        color: #fff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Nunito',sans-serif;
+    }
+
+        .btn-lumina:hover {
+            opacity: .9;
+        }
+
+    .btn-cancel {
+        background: var(--white);
+        color: var(--muted);
+        border: 1.5px solid var(--border);
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: var(--bg);
+            color: var(--muted);
+            text-decoration: none;
+        }
+</style>
+
+<div class="page-bar">
+    <a class="back-link" asp-controller="Cuenta" asp-action="Index">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
+        Volver
+    </a>
+    <h1>Nueva cuenta</h1>
+</div>
+
+<div class="content-area">
+    <div class="panel">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="field">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <a class="btn-cancel" asp-controller="Cuenta" asp-action="Index">Cancelar</a>
+                <button type="submit" class="btn-lumina">Crear cuenta</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

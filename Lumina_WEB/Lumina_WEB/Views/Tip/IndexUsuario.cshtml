@@ -1,0 +1,423 @@
+@model IEnumerable<Lumina_WEB.Models.Tip>
+
+@{
+    ViewData["Title"] = "Tips";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var tipos = ViewBag.TipoTips as List<Lumina_WEB.Models.tipoTip> ?? new List<Lumina_WEB.Models.tipoTip>();
+    var tips = Model ?? Enumerable.Empty<Lumina_WEB.Models.Tip>();
+    var tipDelDia = tips.FirstOrDefault();
+    var tipoDelDia = tipDelDia != null ? tipos.FirstOrDefault(t => t.id == tipDelDia.idTipoTips) : null;
+}
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "primary": "#a13e2a",
+                    "primary-container": "#e8735a",
+                    "on-primary-container": "#5f0e01",
+                    "surface": "#fff8f6",
+                    "surface-alt": "#FBEBE4",
+                    "surface-container": "#f6ecea",
+                    "surface-container-low": "#fbf1ef",
+                    "surface-variant": "#F0DCD4",
+                    "on-surface-variant": "#56423e",
+                    "border-peach": "#FFD5CC",
+                    "cream-bg": "#FFF5F3",
+                    "accent-soft": "#FFF0ED",
+                    "tertiary": "#904b36",
+                    "secondary-container": "#F29F8A",
+                    "text-primary": "#3A1810",
+                    "text-soft": "#C48070",
+                    "text-muted": "#7A3828",
+                    "action-deep": "#C94F38"
+                },
+                "fontFamily": {
+                    "display-lg": ["Libre Caslon Text"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "headline-sm": ["Libre Caslon Text"],
+                    "body-lg": ["Nunito Sans"],
+                    "body-md": ["Nunito Sans"],
+                    "body-sm": ["Nunito Sans"],
+                    "label-caps": ["Nunito Sans"]
+                },
+                "fontSize": {
+                    "headline-md": ["26px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "headline-sm": ["18px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "body-md": ["11px", {"lineHeight": "1.35", "fontWeight": "700"}],
+                    "label-caps": ["10px", {"lineHeight": "1.2", "letterSpacing": "0.14em", "fontWeight": "700"}]
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    body {
+        background-color: #fff8f6;
+        color: #1f1b1a;
+        font-family: 'Nunito Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    @@keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+</style>
+
+<div class="w-full max-w-[1600px] mx-auto">
+
+    <!-- ENCABEZADO -->
+    <div class="mb-8 md:mb-12 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+
+        <div>
+            <h2 class="font-display-lg text-[30px] md:text-[38px] text-text-primary mb-2">
+                Tips de Bienestar
+            </h2>
+
+            <p class="text-sm md:text-base text-text-soft max-w-2xl">
+                Pequeños pasos, grandes cambios. Descubre prácticas sencillas
+                para nutrir tu mente y cuerpo cada día.
+            </p>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="w-full lg:w-72 relative">
+
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-soft text-lg">
+                search
+            </span>
+
+            <input id="tipSearch"
+                   class="w-full bg-white border border-border-peach rounded-xl py-3 pl-10 pr-4 text-sm text-text-primary focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container"
+                   placeholder="Buscar tips..."
+                   type="text" />
+
+        </div>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+        <!-- COLUMNA PRINCIPAL -->
+        <div class="lg:col-span-8 flex flex-col gap-8">
+
+            <!-- CATEGORÍAS -->
+            <div class="flex flex-wrap gap-2 md:gap-3">
+
+                <button type="button"
+                        class="tip-filter px-4 md:px-5 py-2 rounded-full bg-primary-container text-white font-bold text-xs md:text-sm transition-transform hover:scale-105"
+                        data-tipo="todos">
+
+                    Todos
+
+                </button>
+
+                @foreach (var tipo in tipos)
+                {
+                    <button type="button"
+                            class="tip-filter px-4 md:px-5 py-2 rounded-full bg-white border border-border-peach text-text-muted font-bold text-xs md:text-sm hover:border-primary-container hover:text-primary transition-colors"
+                            data-tipo="@tipo.id">
+
+                        @tipo.nombre
+
+                    </button>
+                }
+
+            </div>
+
+            <!-- TIPS -->
+            @if (tips.Any())
+            {
+                <div id="tipsGrid"
+                     class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+
+                    @foreach (var item in tips)
+                    {
+                        var tipo = tipos.FirstOrDefault(t => t.id == item.idTipoTips);
+
+                        <div class="tip-card border border-border-peach rounded-2xl p-5 md:p-6 shadow-[0_4px_20px_rgba(100,40,0,0.05)] hover:shadow-[0_8px_30px_rgba(100,40,0,0.1)] transition-all group flex flex-col h-full"
+                             style="background:#FBE0D6;"
+                             data-tipo="@item.idTipoTips"
+                             data-nombre="@((item.nombre ?? "").ToLower())"
+                             data-descripcion="@((item.descripcion ?? "").ToLower())">
+
+                            <!-- ICONO -->
+                            <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
+
+                                <span class="material-symbols-outlined text-primary text-2xl">
+                                    lightbulb
+                                </span>
+
+                            </div>
+
+                            <!-- CATEGORÍA -->
+                            @if (tipo != null)
+                            {
+                                <span class="inline-block self-start mb-3 px-3 py-1 bg-accent-soft text-primary rounded-full text-[10px] font-bold uppercase tracking-wide">
+
+                                    @tipo.nombre
+
+                                </span>
+                            }
+
+                            <!-- NOMBRE -->
+                            <h3 class="font-headline-sm text-[18px] text-text-primary mb-2">
+
+                                @item.nombre
+
+                            </h3>
+
+                            <!-- DESCRIPCIÓN -->
+                            <p class="text-sm text-text-muted mb-6 flex-1 leading-relaxed">
+
+                                @item.descripcion
+
+                            </p>
+
+                            <div class="flex items-center justify-end mt-auto pt-4 border-t border-surface-variant">
+
+                                <span class="material-symbols-outlined text-primary opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                                    arrow_forward
+                                </span>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+                <div id="sinResultados"
+                     class="hidden bg-white border border-border-peach rounded-2xl p-8 text-center text-text-soft">
+
+                    No se encontraron tips con esos criterios.
+
+                </div>
+            }
+            else
+            {
+                <div class="bg-white border border-border-peach rounded-2xl p-8 md:p-12 text-center">
+
+                    <span class="material-symbols-outlined text-primary text-5xl mb-4">
+                        lightbulb
+                    </span>
+
+                    <p class="text-text-soft">
+                        No hay tips disponibles en este momento.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+
+        <!-- TIP DEL DÍA -->
+        <div class="lg:col-span-4">
+
+            <div class="lg:sticky lg:top-24 bg-gradient-to-br from-surface-alt to-white border border-border-peach rounded-3xl p-5 md:p-8 shadow-[0_12px_40px_rgba(230,81,0,0.08)] relative overflow-hidden">
+
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-secondary-container opacity-20 blur-3xl pointer-events-none">
+                </div>
+
+                <div class="flex items-center gap-3 mb-6">
+
+                    <span class="material-symbols-outlined text-primary-container"
+                          style="font-variation-settings:'FILL' 1">
+
+                        auto_awesome
+
+                    </span>
+
+                    <h3 class="font-headline-md text-[22px] md:text-[26px] text-text-primary">
+
+                        Tip del Día
+
+                    </h3>
+
+                </div>
+
+                <div class="relative w-full h-36 md:h-48 mb-6 rounded-2xl overflow-hidden bg-cream-bg flex items-center justify-center border border-white/50">
+
+                    <span class="material-symbols-outlined text-primary text-[72px] md:text-[100px] animate-float">
+                        light_mode
+                    </span>
+
+                </div>
+
+                @if (tipDelDia != null)
+                {
+                    <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white">
+
+                        @if (tipoDelDia != null)
+                        {
+                            <span class="inline-block mb-3 px-3 py-1 bg-accent-soft text-primary rounded-full text-[10px] font-bold uppercase tracking-wide">
+
+                                @tipoDelDia.nombre
+
+                            </span>
+                        }
+
+                        <h4 class="text-base font-bold text-text-primary mb-2">
+
+                            @tipDelDia.nombre
+
+                        </h4>
+
+                        <p class="text-sm text-text-muted leading-relaxed">
+
+                            @tipDelDia.descripcion
+
+                        </p>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="bg-white/80 p-5 rounded-2xl border border-white text-center">
+
+                        <p class="text-text-soft text-sm">
+
+                            No hay un tip del día disponible.
+
+                        </p>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const filtros = document.querySelectorAll(".tip-filter");
+            const tarjetas = document.querySelectorAll(".tip-card");
+            const buscador = document.getElementById("tipSearch");
+            const sinResultados = document.getElementById("sinResultados");
+
+            let tipoSeleccionado = "todos";
+
+            function filtrarTips() {
+
+                const textoBusqueda =
+                    buscador ? buscador.value.toLowerCase().trim() : "";
+
+                let visibles = 0;
+
+                tarjetas.forEach(tarjeta => {
+
+                    const tipo = tarjeta.dataset.tipo;
+                    const nombre = tarjeta.dataset.nombre || "";
+                    const descripcion = tarjeta.dataset.descripcion || "";
+
+                    const coincideTipo =
+                        tipoSeleccionado === "todos" ||
+                        tipo === tipoSeleccionado;
+
+                    const coincideBusqueda =
+                        nombre.includes(textoBusqueda) ||
+                        descripcion.includes(textoBusqueda);
+
+                    if (coincideTipo && coincideBusqueda) {
+
+                        tarjeta.classList.remove("hidden");
+                        visibles++;
+
+                    }
+                    else {
+
+                        tarjeta.classList.add("hidden");
+
+                    }
+
+                });
+
+                if (sinResultados) {
+
+                    if (visibles === 0 && tarjetas.length > 0) {
+                        sinResultados.classList.remove("hidden");
+                    }
+                    else {
+                        sinResultados.classList.add("hidden");
+                    }
+
+                }
+
+            }
+
+            filtros.forEach(boton => {
+
+                boton.addEventListener("click", function () {
+
+                    tipoSeleccionado = this.dataset.tipo;
+
+                    filtros.forEach(filtro => {
+
+                        filtro.classList.remove(
+                            "bg-primary-container",
+                            "text-white"
+                        );
+
+                        filtro.classList.add(
+                            "bg-white",
+                            "text-text-muted",
+                            "border",
+                            "border-border-peach"
+                        );
+
+                    });
+
+                    this.classList.remove(
+                        "bg-white",
+                        "text-text-muted",
+                        "border",
+                        "border-border-peach"
+                    );
+
+                    this.classList.add(
+                        "bg-primary-container",
+                        "text-white"
+                    );
+
+                    filtrarTips();
+
+                });
+
+            });
+
+            if (buscador) {
+
+                buscador.addEventListener(
+                    "input",
+                    filtrarTips
+                );
+
+            }
+
+        });
+
+    </script>
+}

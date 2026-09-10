@@ -1,0 +1,476 @@
+﻿@model Lumina_WEB.Models.ViewModels.HomeUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<style>
+    .home-wrap {
+        padding: 28px 32px 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .home-display {
+        font-family: 'Cormorant Garamond', serif;
+    }
+
+    .home-headline {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+    }
+
+    /* ── HERO ── */
+    .home-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        padding: 34px 40px;
+        background: linear-gradient(135deg, var(--c1), var(--white));
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 170px;
+    }
+
+    .home-hero-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 30px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0 0 6px;
+    }
+
+    .home-hero-text {
+        font-size: 13px;
+        color: var(--muted);
+        max-width: 340px;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .home-hero-float {
+        flex-shrink: 0;
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        background: var(--white);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 12px 30px -10px rgba(180, 60, 50, 0.25);
+        animation: homeFloat 5s ease-in-out infinite;
+    }
+
+    .home-hero-float .material-symbols-outlined {
+        font-size: 52px;
+        color: var(--c5);
+    }
+
+    @@keyframes homeFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    /* ── ESTADOS DE ÁNIMO ── */
+    .mood-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 18px 10px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .mood-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px -12px rgba(180, 60, 50, 0.28);
+    }
+
+    .mood-btn.active {
+        border-color: var(--c5);
+        box-shadow: 0 0 0 3px rgba(242, 119, 110, 0.18);
+    }
+
+    .mood-emoji {
+        font-size: 30px;
+        line-height: 1;
+    }
+
+    .mood-name {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+    }
+
+    /* ── TARJETA DE EJERCICIO ── */
+    .ex-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: transform .18s ease;
+        height: 100%;
+    }
+
+    .ex-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .ex-thumb {
+        height: 120px;
+        background: linear-gradient(135deg, var(--c1), var(--c4));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ex-thumb .material-symbols-outlined {
+        font-size: 46px;
+        color: #fff;
+        text-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .ex-body {
+        padding: 18px;
+    }
+
+    .ex-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        background: var(--c1);
+        color: var(--c5);
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .ex-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 8px 0 4px;
+    }
+
+    .ex-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 14px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .ex-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 9px 0;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--c5);
+        text-decoration: none;
+        transition: background .15s ease, color .15s ease;
+    }
+
+    .ex-btn:hover {
+        background: var(--c5);
+        border-color: var(--c5);
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .link-more {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--c5);
+        text-decoration: none;
+    }
+
+    .link-more:hover {
+        color: var(--c4);
+        text-decoration: underline;
+    }
+
+    /* ── TIP DEL DÍA ── */
+    .tip-card {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(160deg, var(--c5), var(--c4));
+        color: #fff;
+        border-radius: 24px;
+        padding: 28px;
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .tip-blob {
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        filter: blur(30px);
+    }
+
+    .tip-icon {
+        position: absolute;
+        top: 26px;
+        right: 28px;
+        font-size: 64px;
+        color: rgba(255, 255, 255, 0.9);
+        animation: homeFloat 5s ease-in-out infinite;
+    }
+
+    .tip-badge {
+        display: inline-block;
+        width: fit-content;
+        padding: 4px 12px;
+        background: rgba(255, 255, 255, 0.22);
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        margin-bottom: 12px;
+    }
+
+    .tip-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 22px;
+        font-style: italic;
+        line-height: 1.25;
+        margin: 0 0 8px;
+    }
+
+    .tip-desc {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.55;
+        margin-bottom: 14px;
+    }
+
+    .tip-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    .tip-link:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    /* ── RACHA ── */
+    .streak-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px;
+    }
+
+    .streak-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .streak-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0;
+    }
+
+    .streak-value {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--c5);
+    }
+
+    .streak-track {
+        height: 10px;
+        border-radius: 999px;
+        background: var(--c1);
+        overflow: hidden;
+    }
+
+    .streak-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--c5);
+    }
+
+    .streak-hint {
+        font-size: 10px;
+        color: var(--soft);
+        text-align: center;
+        margin: 10px 0 0;
+    }
+</style>
+
+<div class="home-wrap">
+
+    <!-- ═══ HERO ═══ Bienvenida y saludo -->
+    <section class="home-hero mb-5">
+        <div>
+            <h2 class="home-hero-title">Hola</h2>
+            <p class="home-hero-text">Tu santuario personal te espera. ¿Cómo te sientes en este momento?</p>
+        </div>
+        <div class="home-hero-float">
+            <span class="material-symbols-outlined">light_mode</span>
+        </div>
+    </section>
+
+    <!-- ═══ ESTADOS DE ÁNIMO ═══ Selector de ánimo del usuario -->
+    <section class="mb-5">
+        <h3 class="home-headline mb-3">Tu estado de ánimo</h3>
+
+        @if (Model.EstadosAnimo != null && Model.EstadosAnimo.Any())
+        {
+            <div class="row g-3 row-cols-2 row-cols-md-5">
+                @foreach (var estado in Model.EstadosAnimo)
+                {
+                    <div class="col">
+                        <button type="button" class="mood-btn" onclick="selectMood(this)">
+                            <span class="mood-emoji">@estado.Emoji</span>
+                            <span class="mood-name">@estado.Nombre</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="bg-white border border-danger-subtle rounded-4 p-4 text-center text-secondary">
+                No hay estados de ánimo disponibles.
+            </div>
+        }
+    </section>
+
+    <!-- ═══ CONTENIDO PRINCIPAL ═══ Ejercicios sugeridos + Tip del día -->
+    <div class="row g-4">
+
+        <!-- Columna izquierda: Ejercicios sugeridos -->
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h3 class="home-headline mb-0">Sugerido para hoy</h3>
+                <a class="link-more" asp-controller="Ejercicio" asp-action="Index">Ver todo</a>
+            </div>
+
+            @if (Model.EjerciciosSugeridos != null && Model.EjerciciosSugeridos.Any())
+            {
+                <div class="row g-4 row-cols-1 row-cols-md-2">
+                    @foreach (var ejercicio in Model.EjerciciosSugeridos)
+                    {
+                        <div class="col">
+                            <div class="ex-card">
+                                <div class="ex-thumb">
+                                    <span class="material-symbols-outlined">self_improvement</span>
+                                </div>
+                                <div class="ex-body">
+                                    <span class="ex-badge">Ejercicio</span>
+                                    <h4 class="ex-title">@ejercicio.Nombre</h4>
+                                    <p class="ex-desc">@ejercicio.Descripcion</p>
+                                    <a class="ex-btn" asp-controller="Ejercicio" asp-action="Index">
+                                        
+                                        Ver más
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="bg-white border border-danger-subtle rounded-4 p-4 text-center text-secondary">
+                    No hay ejercicios disponibles.
+                </div>
+            }
+        </div>
+
+        <!-- Columna derecha: Tip del día -->
+        <div class="col-lg-4">
+            <div class="d-flex flex-column gap-4">
+
+                <div>
+                    <h3 class="home-headline mb-3">Lumi Tip</h3>
+
+                    <div class="tip-card">
+                        <div class="tip-blob"></div>
+                        <span class="tip-icon material-symbols-outlined">light_mode</span>
+
+                        @if (Model.TipDelDia != null)
+                        {
+                            <span class="tip-badge">CONSEJO DEL DÍA</span>
+                            <h4 class="tip-title">@Model.TipDelDia.nombre</h4>
+                            <p class="tip-desc">@Model.TipDelDia.descripcion</p>
+                            <a class="tip-link" asp-controller="Tip" asp-action="Index">
+                                Ver más
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="tip-badge">CONSEJO DEL DÍA</span>
+                            <p class="tip-desc">No hay tips disponibles.</p>
+                        }
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+        function selectMood(btn) {
+            document.querySelectorAll('.mood-btn').forEach(function (b) {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+        }
+    </script>
+}

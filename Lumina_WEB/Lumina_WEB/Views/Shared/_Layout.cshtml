@@ -1,0 +1,538 @@
+@using Lumina_WEB.Datos
+@using Microsoft.AspNetCore.Http
+@inject ApplicationDbContext _dbLayout
+@{
+    var idUsuarioActual = Context.Session.GetInt32("UsuarioId");
+    var usuarioActual = idUsuarioActual != null
+        ? _dbLayout.Usuarios.FirstOrDefault(u => u.id == idUsuarioActual.Value)
+        : null;
+    var esAdmin = Context.Session.GetInt32("ModoAdmin") == 1;
+}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Lúmina</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Lumina_WEB.styles.css" asp-append-version="true" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap"
+          rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet" />
+
+    <style>
+        :root {
+
+            /* VARIABLES LEGADAS (las usan todas las vistas) */
+            --bg: #FFF4F0;
+            --white: #ffffff;
+            --border: #F9BD91;
+            --c1: #FEF0EB;
+            --c4: #F58A72;
+            --c5: #F2776E;
+            --text: #3D1F1A;
+            --muted: #7A4035;
+            --soft: #C48070;
+
+            --color-cream-bg: #fff8f6;
+            --color-on-surface: #1f1b1a;
+            --color-surface-card: #ffffff;
+            --color-outline-variant: #ddc0ba;
+            --color-primary-container: #e8735a;
+            --color-primary: #a13e2a;
+            --color-success: #2e7d32;
+            --color-soft-text: #C48070;
+            --color-muted-text: #56423e;
+            --color-cream-surface: #FFEAE6;
+
+            /* PALETA NUEVA */
+            --surface-container-low: #fbf1ef;
+            --surface-container-high: #f0e6e4;
+            --surface-container: #f6ecea;
+            --primary: #a13e2a;
+            --primary-container: #e8735a;
+            --primary-fixed: #ffdad3;
+            --action-deep: #C94F38;
+            --on-surface: #1f1b1a;
+            --on-surface-variant: #56423e;
+            --outline-variant: #ddc0ba;
+            --border-peach: #FFD5CC;
+
+            /* TIPOGRAFÍAS */
+            --font-title: "Libre Caslon Text", serif;
+            --font-body: "Nunito Sans", sans-serif;
+
+            /* LAYOUT */
+            --sidebar-w: 256px;
+        }
+
+        body {
+            background-color: #fff8f6;
+            color: #1f1b1a;
+            -webkit-font-smoothing: antialiased;
+            font-family: var(--font-body);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .warm-shadow {
+            box-shadow: 0 10px 30px -5px rgba(100, 40, 0, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+
+        .mood-card-active {
+            outline: 2px solid #a13e2a;
+            background-color: #ffdad3;
+        }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* ── SIDEBAR ── */
+        .lumina-sidebar {
+            width: var(--sidebar-w);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: var(--surface-container-low);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            z-index: 50;
+            overflow-y: auto;
+        }
+
+        .sb-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px;
+            margin-bottom: 3rem;
+        }
+
+        .sb-brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-container);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sb-brand-icon .material-symbols-outlined {
+            color: #fff;
+            font-size: 22px;
+        }
+
+        .sb-brand-title {
+            font-family: var(--font-title);
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .sb-brand-sub {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--on-surface-variant);
+            opacity: .7;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .sb-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0.7rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--on-surface-variant);
+            text-decoration: none;
+            transition: background-color .15s ease, color .15s ease;
+        }
+
+        .sb-link:hover {
+            background-color: var(--surface-container-high);
+            color: var(--on-surface-variant);
+            text-decoration: none;
+        }
+
+        .sb-link.active {
+            background-color: var(--primary-fixed);
+            color: var(--primary);
+        }
+
+        .sb-link .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+        .sb-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--soft);
+            padding: 14px 10px 4px;
+        }
+
+        /* ── TOPBAR ── */
+        .lumina-topbar {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-w);
+            right: 0;
+            height: 64px;
+            background-color: rgba(255, 248, 246, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--outline-variant);
+            z-index: 40;
+        }
+
+        .search-wrap {
+            position: relative;
+            max-width: 440px;
+        }
+
+        .search-wrap .material-symbols-outlined {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--on-surface-variant);
+            font-size: 18px;
+        }
+
+        .search-input {
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            padding: 0.5rem 1rem 0.5rem 2.6rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-container);
+            box-shadow: 0 0 0 0.2rem rgba(232, 115, 90, 0.15);
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: 0;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            color: var(--on-surface-variant);
+            line-height: 1;
+        }
+
+        .icon-btn:hover {
+            color: var(--primary);
+        }
+
+        .icon-btn .material-symbols-outlined {
+            font-size: 22px;
+        }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 1px solid var(--outline-variant);
+            padding-left: 22px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .user-chip:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-fixed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar .material-symbols-outlined {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        /* ── MAIN ── */
+        .lumina-main {
+            margin-left: var(--sidebar-w);
+            padding: 88px 32px 40px;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body class="text-on-surface">
+
+    <!-- SIDEBAR -->
+    <aside class="lumina-sidebar d-flex flex-column py-4 px-3">
+
+        <div class="sb-brand">
+
+            <div class="sb-brand-icon">
+                <span class="material-symbols-outlined">
+                    light_mode
+                </span>
+            </div>
+
+            <div>
+                <h1 class="sb-brand-title">
+                    Lúmina
+                </h1>
+
+                <p class="sb-brand-sub">
+                    Ilumina tus emociones
+                </p>
+            </div>
+
+        </div>
+
+        <nav class="d-flex flex-column gap-1 flex-grow-1">
+
+            <!-- INICIO -->
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="sb-link fw-bold">
+
+                <span class="material-symbols-outlined">
+                    dashboard
+                </span>
+
+                <span>Inicio</span>
+            </a>
+
+            <!-- DIARIO -->
+            <a asp-controller="EntradasDiario"
+               asp-action="Index"
+               class="sb-link">
+
+                <span class="material-symbols-outlined">
+                    edit_note
+                </span>
+
+                <span>Diario</span>
+            </a>
+
+            <!-- MEDITACIÓN -->
+            <a asp-controller="Ejercicio"
+               asp-action="Index"
+               class="sb-link">
+
+                <span class="material-symbols-outlined">
+                    self_improvement
+                </span>
+
+                <span>Ejercicios</span>
+            </a>
+
+            <!-- TIPS -->
+            <a asp-controller="Tip"
+               asp-action="Index"
+               class="sb-link">
+
+                <span class="material-symbols-outlined">
+                    lightbulb
+                </span>
+
+                <span>Tips</span>
+            </a>
+
+            <!-- AGENDA -->
+            <a asp-controller="Recordatorio"
+               asp-action="Index"
+               class="sb-link">
+
+                <span class="material-symbols-outlined">
+                    calendar_month
+                </span>
+
+                <span>Agenda</span>
+            </a>
+
+           
+
+            <!-- ADMINISTRACIÓN (solo modo admin) -->
+            @if (esAdmin)
+            {
+                
+
+                <!-- CUENTAS -->
+                <a asp-controller="Cuenta"
+                   asp-action="Index"
+                   class="sb-link">
+
+                    <span class="material-symbols-outlined">
+                        settings
+                    </span>
+
+                    <span>Cuentas</span>
+                </a>
+
+               
+
+                <a asp-controller="EstadoAnimo"
+                   asp-action="Index"
+                   class="sb-link">
+
+                    <span class="material-symbols-outlined">
+                        mood
+                    </span>
+
+                    <span>Estados de ánimo</span>
+                </a>
+            }
+
+            <div class="sb-label">Cuenta</div>
+
+            <!-- PERFIL -->
+            <a asp-controller="Usuario"
+               asp-action="Perfil"
+               class="sb-link">
+
+                <span class="material-symbols-outlined">
+                    person
+                </span>
+
+                <span>Perfil</span>
+            </a>
+
+            <!-- CERRAR SESIÓN -->
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="sb-link w-100 border-0 bg-transparent text-start">
+                    <span class="material-symbols-outlined">
+                        logout
+                    </span>
+
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
+
+        </nav>
+        
+
+    </aside>
+
+    <!-- TOP NAVBAR -->
+    <header class="lumina-topbar d-flex justify-content-between align-items-center px-4">
+
+        
+
+            <a asp-controller="Usuario" asp-action="Perfil" class="user-chip ms-auto">
+
+                <div class="text-end">
+
+                    <p class="fw-bold mb-0" style="font-size:12px;">
+                        @(usuarioActual != null ? (usuarioActual.nombre + " " + usuarioActual.apellido).Trim() : "Usuario")
+                    </p>
+                </div>
+
+                <div class="user-avatar">
+
+                    @if (!string.IsNullOrEmpty(usuarioActual?.urlFotoPerfil))
+                    {
+                        <img src="@Url.Content(usuarioActual.urlFotoPerfil)" alt="Foto de perfil" />
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined">
+                            person
+                        </span>
+                    }
+
+                </div>
+
+            </a>
+
+        
+
+    </header>
+
+    <!-- AQUÍ APARECE CADA VISTA -->
+    <main class="lumina-main">
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Marca el item activo del sidebar según el controlador y acción actuales
+        const currentController = '@ViewContext.RouteData.Values["controller"]'?.toLowerCase();
+        const currentAction = '@ViewContext.RouteData.Values["action"]'?.toLowerCase();
+
+        document.querySelectorAll('.lumina-sidebar .sb-link').forEach(item => {
+            const href = item.getAttribute('href') || '';
+            const parts = href.split('/');
+            const itemController = parts[1]?.toLowerCase();
+            const itemAction = parts[2]?.toLowerCase();
+
+            if (itemController && currentController === itemController) {
+                if (itemAction && itemAction !== 'index') {
+                    if (itemAction === currentAction) {
+                        item.classList.add('active');
+                    }
+                } else if (!currentAction || currentAction === 'index') {
+                    item.classList.add('active');
+                }
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

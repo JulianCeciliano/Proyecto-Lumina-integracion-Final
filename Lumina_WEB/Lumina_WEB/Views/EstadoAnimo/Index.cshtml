@@ -1,0 +1,285 @@
+﻿@*
+ * ════════════════════════════════════════════════════
+ *  VISTA: Index.cshtml (EstadoAnimo - Admin)
+ *  Convertida de Tailwind a Bootstrap 5.
+ *  Recibe una lista de EstadoAnimo desde el controlador.
+ * ════════════════════════════════════════════════════
+ *@
+@model List<Lumina_WEB.Models.EstadoAnimo>
+
+@{
+    ViewData["Title"] = "Estados Emocionales | Lúmina Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var total = Model.Count;
+    // Si tu clase EstadoAnimo aún no tiene "Activo", cambia esta línea por: var activos = total;
+    var activos = total;
+}
+
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --cream-bg: #FFF4F0;
+        --cream-surface: #FEEEE8;
+        --border-c: #F9BD91;
+        --border-hover: #F69C7A;
+        --primary: #a33c36;
+        --primary-container: #F58A72;
+        --secondary: #9b4431;
+        --on-surface: #2f140f;
+        --muted-text: #7A4035;
+        --soft-text: #C48070;
+        --success: #4CAF50;
+    }
+
+    body {
+        background-color: var(--cream-bg);
+        font-family: 'Nunito Sans', sans-serif;
+        color: var(--on-surface);
+    }
+
+    .editorial-header { font-family: 'EB Garamond', serif; }
+
+    .sanctuary-card {
+        background-color: #fff;
+        border: 1.5px solid var(--border-c);
+        box-shadow: 0 4px 20px rgba(180, 60, 50, .05);
+        transition: all .3s ease;
+    }
+    .sanctuary-card:hover {
+        border-color: var(--border-hover);
+        box-shadow: 0 8px 30px rgba(180, 60, 50, .08);
+    }
+
+    .btn-primary-lumina {
+        background-color: var(--primary-container);
+        color: #fff;
+        border: none;
+        transition: transform .2s ease, background-color .2s ease;
+    }
+    .btn-primary-lumina:hover {
+        background-color: var(--primary);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary-lumina {
+        border: 1.5px solid var(--border-hover);
+        color: #3D1F1A;
+        background: transparent;
+    }
+    .btn-secondary-lumina:hover { background-color: var(--cream-surface); }
+
+    .material-symbols-outlined { vertical-align: middle; font-size: 20px; }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary-container) !important;
+        box-shadow: 0 0 0 4px rgba(245, 138, 114, .1);
+    }
+
+    .table-row { transition: background-color .2s ease, transform .2s ease-out; }
+    .table-row:hover { background-color: #FFF8F6; transform: translateX(4px); }
+
+    .label-bold {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--muted-text);
+    }
+
+    .breadcrumb-item.active { color: var(--primary); }
+
+    .page-link-lumina {
+        color: var(--muted-text);
+        border-color: var(--border-c);
+    }
+    .page-link-lumina.active {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+    }
+
+    .icon-circle {
+        width: 48px; height: 48px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    .swatch {
+        width: 28px; height: 28px; border-radius: 8px;
+        display: inline-block; border: 1px solid rgba(0,0,0,.08);
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-c); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-container); }
+</style>
+
+<main class="container-xxl px-4 py-5" style="max-width:1440px;">
+
+    <!-- Header -->
+    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4 mb-5">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb label-bold mb-3">
+                    <li class="breadcrumb-item">Configuración</li>
+                    <li class="breadcrumb-item active" aria-current="page">Estados Emocionales</li>
+                </ol>
+            </nav>
+            <h1 class="editorial-header mb-2" style="font-size:32px; font-weight:600;">
+                Gestión de Estados Emocionales
+            </h1>
+            <p class="mb-0" style="color:var(--soft-text); max-width:640px; font-size:16px;">
+                Define y organiza el espectro emocional disponible para los usuarios en su diario personal.
+                Cada estado ayuda a construir el Mood Map diario.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary-lumina px-4 py-2 rounded-3 label-bold d-flex align-items-center gap-2 text-decoration-none" style="color:#fff;">
+            <span class="material-symbols-outlined">add</span>
+            CREAR NUEVO ESTADO
+        </a>
+    </header>
+
+    <!-- Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="sanctuary-card rounded-4 p-4 d-flex align-items-center gap-3">
+                <div class="icon-circle" style="background-color:var(--cream-surface); color:var(--primary);">
+                    <span class="material-symbols-outlined">database</span>
+                </div>
+                <div>
+                    <p class="label-bold mb-1">TOTAL ESTADOS</p>
+                    <p class="fs-3 fw-bold mb-0">@total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="sanctuary-card rounded-4 p-4 d-flex align-items-center gap-3">
+                <div class="icon-circle" style="background-color:rgba(76,175,80,.1); color:var(--success);">
+                    <span class="material-symbols-outlined">check_circle</span>
+                </div>
+                <div>
+                    <p class="label-bold mb-1">ACTIVOS</p>
+                    <p class="fs-3 fw-bold mb-0">@activos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="sanctuary-card rounded-4 p-4 d-flex align-items-center gap-3">
+                <div class="icon-circle" style="background-color:rgba(155,68,49,.15); color:var(--secondary);">
+                    <span class="material-symbols-outlined">trending_up</span>
+                </div>
+                <div>
+                    <p class="label-bold mb-1">USO ESTE MES</p>
+                    <p class="fs-3 fw-bold mb-0">—</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros + tabla -->
+    <section class="sanctuary-card rounded-4 overflow-hidden mb-5">
+        <div class="p-3 border-bottom d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="border-color:var(--border-c) !important;">
+            <div class="position-relative w-100" style="max-width:384px;">
+                <span class="material-symbols-outlined position-absolute top-50 start-0 translate-middle-y ms-3" style="color:var(--muted-text);">search</span>
+                <input id="buscarEstado" type="text" class="search-input form-control ps-5" style="background-color:var(--cream-bg); border:1px solid var(--border-c);" placeholder="Buscar por nombre o descripción...">
+            </div>
+            <div class="d-flex align-items-center gap-2 w-100 w-md-auto">
+                <button class="btn btn-secondary-lumina px-3 py-2 rounded-3 label-bold d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    FILTRAR
+                </button>
+                <button class="btn btn-secondary-lumina px-3 py-2 rounded-3 label-bold d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined">download</span>
+                    EXPORTAR
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead>
+                    <tr class="label-bold" style="background-color:var(--cream-surface);">
+                        <th class="px-4 py-3">Estado</th>
+                        <th class="px-4 py-3">Indicador visual</th>
+                        <th class="px-4 py-3">Definición</th>
+                        <th class="px-4 py-3">Color</th>
+                        <th class="px-4 py-3 text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaEstados">
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="px-4 py-5 text-center">
+                                <div class="d-flex flex-column align-items-center gap-3">
+                                    <span class="material-symbols-outlined fs-1" style="color:var(--soft-text);">sentiment_dissatisfied</span>
+                                    <p class="mb-0" style="color:var(--muted-text);">No se encontraron estados emocionales. Comienza creando uno nuevo.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var estado in Model)
+                        {
+                            <tr class="table-row">
+                                <td class="px-4 py-3 fw-semibold">@estado.Nombre</td>
+                                <td class="px-4 py-3 fs-4">@estado.Emoji</td>
+                                <td class="px-4 py-3" style="color:var(--muted-text); max-width:320px;">@estado.Descripcion</td>
+                                <td class="px-4 py-3">
+                                    <span class="swatch" style="background-color:@estado.ColorHex;" title="@estado.ColorHex"></span>
+                                </td>
+                                <td class="px-4 py-3 text-end">
+                                    <a asp-action="Edit" asp-route-id="@estado.Id" class="btn btn-sm btn-secondary-lumina rounded-3 me-1" title="Editar">
+                                        <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@estado.Id" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este estado emocional?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm rounded-3" style="border:1.5px solid #F87171; color:#B91C1C; background:transparent;" title="Eliminar">
+                                            <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación (decorativa por ahora) -->
+        <div class="p-3 border-top d-flex align-items-center justify-content-between" style="border-color:var(--border-c) !important;">
+            <p class="mb-0" style="color:var(--soft-text);">Mostrando @total de @total estados</p>
+            <nav aria-label="Paginación">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled">
+                        <span class="page-link page-link-lumina"><span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span></span>
+                    </li>
+                    <li class="page-item"><span class="page-link page-link-lumina active">1</span></li>
+                    <li class="page-item">
+                        <span class="page-link page-link-lumina"><span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span></span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script>
+        // Búsqueda simple del lado del cliente, filtra filas visibles por texto
+        document.getElementById('buscarEstado').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('#tablaEstados .table-row').forEach(row => {
+                const texto = row.innerText.toLowerCase();
+                row.style.display = texto.includes(term) ? '' : 'none';
+            });
+        });
+    </script>
+}

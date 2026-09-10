@@ -1,0 +1,143 @@
+﻿@*
+ * ════════════════════════════════════════════════════
+ *  VISTA: Editar.cshtml
+ *
+ *  Formulario precargado para modificar un ejercicio.
+ *  El Id viaja oculto para que el controlador sepa cuál
+ *  registro actualizar (método Editar POST).
+ *
+ *  Estilos: selectores con prefijo "ej-" que respetan el
+ *  layout compartido (variables de color del _Layout.cshtml).
+ * ════════════════════════════════════════════════════
+ *@
+
+@model Lumina_WEB.Models.Ejercicio
+
+@{
+    ViewData["Title"] = "Editar Ejercicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .ej-wrap { width: 100%; max-width: 760px; padding: 32px 24px 60px; }
+
+    /* ── CABECERA DE PÁGINA ── */
+    .ej-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--c4); }
+    .ej-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: var(--text); line-height: 1.15; margin-top: 2px; }
+    .ej-sub { font-size: 12px; color: var(--soft); margin-top: 4px; }
+    .ej-head { margin-bottom: 22px; }
+
+    /* ── PANEL ── */
+    .ej-panel { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .ej-panel-head { display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-bottom: 1px solid var(--border); }
+    .ej-panel-ico { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--c4), var(--c5)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .ej-panel-label { font-size: 14px; font-weight: 800; color: var(--text); }
+
+    /* ── FORMULARIO ── */
+    .ej-form { display: flex; flex-direction: column; gap: 18px; padding: 22px; }
+    .ej-field { display: flex; flex-direction: column; gap: 6px; }
+    .ej-field label { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .ej-inp { background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--text); width: 100%; font-family: 'Nunito', sans-serif; transition: border-color .12s, background .12s; }
+    .ej-inp:focus { outline: none; border-color: var(--c4); background: var(--white); }
+    .ej-inp.on { border-color: var(--c4); background: var(--white); }
+    .ej-hint { font-size: 11px; color: var(--soft); }
+    .ej-error { font-size: 11px; color: #B91C1C; font-weight: 600; }
+    .ej-val-summary { background: #FEE2E2; border: 1px solid #F87171; color: #B91C1C; border-radius: 10px; padding: 12px 16px; font-size: 12px; margin: 0 22px; }
+
+    /* ── CAJA DE CONSEJO (decorativa) ── */
+    .ej-tip { display: flex; gap: 12px; background: var(--c1); border: 1px dashed var(--c4); border-radius: 10px; padding: 14px 16px; margin: 18px 0 0; }
+    .ej-tip .t-ico { font-size: 20px; flex-shrink: 0; }
+    .ej-tip .t-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .ej-tip .t-text strong { color: var(--text); }
+
+    /* ── ACCIONES ── */
+    .ej-actions { display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 4px; }
+    .ej-btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 20px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform .12s, box-shadow .12s; }
+    .ej-btn-p { background: linear-gradient(135deg, var(--c4), var(--c5)); color: #fff; border: none; box-shadow: 0 6px 16px rgba(242, 119, 110, .35); }
+    .ej-btn-p:hover { text-decoration: none; color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(242, 119, 110, .4); }
+    .ej-btn-s { background: var(--white); border: 1.5px solid var(--border); color: var(--muted); }
+    .ej-btn-s:hover { text-decoration: none; color: var(--c5); border-color: var(--c4); background: var(--c1); }
+</style>
+
+<div class="ej-wrap">
+
+    <div class="ej-head">
+        <div class="ej-eyebrow">Panel admin</div>
+        <h1 class="ej-title">Editar ejercicio</h1>
+        <div class="ej-sub">Modifica los datos y guarda los cambios</div>
+    </div>
+
+    <div class="ej-panel">
+
+        <div class="ej-panel-head">
+            <div class="ej-panel-ico">✏️</div>
+            <div>
+                <div class="ej-panel-label">Editar ejercicio</div>
+                <div style="font-size:11px;color:var(--soft)">Los campos ya vienen precargados</div>
+            </div>
+        </div>
+
+        @*
+         * Muestra errores generales de validación (si los hay)
+         *@
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="ej-val-summary">
+                <div asp-validation-summary="ModelOnly"></div>
+            </div>
+        }
+
+        @*
+         * FORMULARIO
+         * asp-action="Editar" → llama al método Editar (POST) del controlador
+         * El campo oculto "Id" viaja con el resto de datos
+         *@
+        <form asp-action="Editar" method="post">
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="ej-form">
+
+                <div class="ej-field">
+                    <label>Nombre del ejercicio</label>
+                    <input asp-for="Nombre"
+                           type="text"
+                           class="ej-inp on"
+                           placeholder="Ej. Respiración profunda" />
+                    <span asp-validation-for="Nombre" class="ej-error"></span>
+                </div>
+
+                <div class="ej-field">
+                    <label>Descripción <span class="ej-hint">(máx. 5000 caracteres)</span></label>
+                    <textarea asp-for="Descripcion"
+                              class="ej-inp on"
+                              rows="7"
+                              placeholder="Describe paso a paso en qué consiste el ejercicio..."
+                              style="resize:vertical;min-height:150px;line-height:1.6"></textarea>
+                    <span asp-validation-for="Descripcion" class="ej-error"></span>
+                </div>
+
+                <div class="ej-actions">
+                    <a asp-action="Index" class="ej-btn ej-btn-s">← Cancelar</a>
+                    <button type="submit" class="ej-btn ej-btn-p">💾 Guardar cambios</button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="ej-tip">
+        <div class="t-ico">💡</div>
+        <div class="t-text">
+            <strong>Consejo:</strong> procura mantener la descripción breve y clara; los ejercicios
+            cortos se siguen mejor desde el móvil.
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

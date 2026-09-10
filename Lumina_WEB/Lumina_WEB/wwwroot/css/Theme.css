@@ -1,0 +1,107 @@
+﻿:root {
+
+    /* COLORES CORPORATIVOS */
+
+    --lumina-primary: #934935;
+    --lumina-primary-container: #d17a63;
+
+    --lumina-background: #fff8f5;
+
+    --lumina-surface: #fff8f5;
+    --lumina-surface-container: #f6ece7;
+    --lumina-surface-container-low: #fcf2ed;
+    --lumina-surface-container-lowest: #ffffff;
+
+    --lumina-outline: #87736e;
+    --lumina-outline-variant: #dac1bb;
+
+    --lumina-on-surface: #1f1b18;
+    --lumina-on-surface-variant: #54433e;
+
+    --lumina-tertiary: #705953;
+
+    /* TIPOGRAFÍAS */
+
+    --lumina-font-body: "Plus Jakarta Sans", sans-serif;
+    --lumina-font-title: "Libre Caslon Text", serif;
+}
+
+/* ===== BASE ===== */
+
+body {
+    font-family: var(--lumina-font-body);
+    background-color: var(--lumina-background);
+    color: var(--lumina-on-surface);
+}
+
+/* ===== TEXTOS ===== */
+
+.text-lumina {
+    color: var(--lumina-primary);
+}
+
+.text-lumina-muted {
+    color: var(--lumina-on-surface-variant);
+}
+
+/* ===== FONDOS ===== */
+
+.bg-lumina {
+    background-color: var(--lumina-background);
+}
+
+.bg-lumina-surface {
+    background-color: var(--lumina-surface-container);
+}
+
+/* ===== BOTONES ===== */
+
+.btn-lumina {
+
+    background-color: var(--lumina-primary-container);
+    border-color: var(--lumina-primary-container);
+
+    color: white;
+}
+
+.btn-lumina:hover {
+
+    background-color: var(--lumina-primary);
+    border-color: var(--lumina-primary);
+    color: white;
+}
+
+/* ===== INPUTS ===== */
+
+.form-control {
+
+    border-color: var(--lumina-outline-variant);
+}
+
+.form-control:focus {
+
+    border-color: var(--lumina-primary-container);
+
+    box-shadow:
+            0 0 0 .2rem rgba(209,122,99,.25);
+}
+
+/* ===== CARDS ===== */
+
+.card-lumina {
+
+    background-color: var(--lumina-surface-container-low);
+
+    border: 1px solid var(--lumina-outline-variant);
+
+    border-radius: 1rem;
+}
+
+/* ===== TITULOS ===== */
+
+.lumina-title {
+
+    font-family: var(--lumina-font-title);
+
+    color: var(--lumina-primary);
+}
