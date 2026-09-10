@@ -5,7 +5,7 @@ namespace Lumina_WEB.Datos;
 public class ApplicationDbContext : DbContext
 {
     //constructor de la clase 
-    public ApplicationDbContext(DbContextOptions<DbContext> options) :
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
         base(options) // recibe esos parametros, y con eso hace la conexion con la base de datos
     {
 
@@ -57,7 +57,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Usuario>()
             .HasOne(u => u.Cuenta)
             .WithMany()
-            .HasForeignKey(u => u.idCuenta)
+            .HasForeignKey(u => u.IdCuenta)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

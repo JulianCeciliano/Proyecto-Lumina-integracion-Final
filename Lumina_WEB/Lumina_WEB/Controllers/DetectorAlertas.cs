@@ -110,7 +110,7 @@ namespace Lumina_WEB.Servicio
         // Menos de 3 no muestra alerta todavía; a partir de 9 la grave es constante.
         public static string? DeterminarNivel(int contador)
         {
-            if (contador > UmbralGrande)
+            if (contador >= UmbralGrande)
             {
                 return "Grande";
             }

@@ -23,12 +23,12 @@ public class TipController : Controller
     // GET
     public async Task<IActionResult> Index()
     {
-        var tips = await _context.Tips.ToListAsync();
+        List<TipoAlerta> tips = await _context.Tips.ToListAsync();
 
         ViewBag.TipoTips = await _context.TiposTip.ToListAsync();
 
         // Usuario normal ve solo lectura; admin ve el CRUD completo
-        bool esAdmin = HttpContext.Session.GetInt32("ModoAdmin") == 2;
+        bool esAdmin = HttpContext.Session.GetInt32("ModoAdmin") == 1;
         return esAdmin ? View(tips) : View("IndexUsuario", tips);
     }
 

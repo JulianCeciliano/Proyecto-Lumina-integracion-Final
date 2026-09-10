@@ -28,7 +28,7 @@ namespace Lumina_WEB.Controllers
             {
                 EstadosAnimo = await _context.EstadosAnimo.ToListAsync(),
                 EjerciciosSugeridos = await _context.Ejercicios.Take(2).ToListAsync(),
-                TipDelDia = await _context.Tips.FirstOrDefaultAsync()
+                TipDelDia = await _context.Ejercicios.FirstOrDefaultAsync()
             };
 
             return View(vm);

@@ -114,7 +114,7 @@ public class UsuarioController : Controller
         if (vm?.Usuario == null || vm.Cuenta == null)
             return RedirectToAction("Perfil");
 
-        if (_context.Cuentas.Any(c => c.Email == vm.Cuenta.Email && c.Id == usuario.idCuenta))
+        if (_context.Cuentas.Any(c => c.Email == vm.Cuenta.Email && c.Id != usuario.idCuenta))
         {
             TempData["Error"] = "Ese correo ya está registrado";
             return RedirectToAction("Perfil");

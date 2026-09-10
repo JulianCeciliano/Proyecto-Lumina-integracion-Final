@@ -24,7 +24,7 @@ namespace Lumina_WEB.Controllers
         public async Task<IActionResult> Index()
         {
             var listaOrdenada = await _db.EstadosAnimo
-                .OrderBy(a => a.Nombre)
+                .OrderBy(a => a.NombreCompleto)
                 .ToListAsync();
 
             return View(listaOrdenada);
@@ -98,7 +98,7 @@ namespace Lumina_WEB.Controllers
             if (obj != null)
             {
                 _db.EstadosAnimo.Remove(obj);
-                _db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
 
             return RedirectToAction("Index");

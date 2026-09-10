@@ -60,7 +60,7 @@ namespace Lumina_WEB.Controllers
             ModelState.Remove(nameof(Recordatorio.IdUsuario));
             ModelState.Remove(nameof(Recordatorio.FechaCreacion));
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(recordatorio);
             }
@@ -125,7 +125,6 @@ namespace Lumina_WEB.Controllers
             }
 
             var recordatorioExistente = await _context.Recordatorios
-                .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == recordatorio.Id && r.IdUsuario == usuarioId.Value); // ← solo suyos
 
             if (recordatorioExistente == null)
@@ -138,7 +137,7 @@ namespace Lumina_WEB.Controllers
             recordatorioExistente.Fecha = recordatorio.Fecha;
             recordatorioExistente.Estado = recordatorio.Estado;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(recordatorio);
 
             return RedirectToAction(nameof(Index));
         }

@@ -38,7 +38,7 @@ public class AuthController : Controller
             return View();
         }
 
-        HttpContext.Session.SetInt32("CuentaId", cuenta.Id);
+        HttpContext.Session.SetInt32("CuentaId", cuenta.Email);
 
         // El doble clic en el título del login activa el modo administrador
         if (modoAdmin == true)

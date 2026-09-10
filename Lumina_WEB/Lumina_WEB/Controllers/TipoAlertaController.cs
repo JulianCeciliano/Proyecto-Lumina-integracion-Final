@@ -21,7 +21,7 @@ namespace Lumina_WEB.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<TipoAlerta> lista = _db.TiposAlerta;
+            IEnumerable<TipoAlerta> lista = _db.Tips;
             return View(lista);
         }
 

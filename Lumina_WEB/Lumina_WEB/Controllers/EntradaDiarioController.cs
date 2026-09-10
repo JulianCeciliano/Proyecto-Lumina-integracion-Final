@@ -35,6 +35,7 @@ namespace Lumina_WEB.Controllers
 
             var listaOrdenada = await _context.EntradasDiario
                 .Where(e => e.IdUsuario == usuarioId.Value)   // ← solo las del usuario en sesión
+                .Include(e => e.EstadoAnimo)
                 .OrderByDescending(e => e.FechaCreacion)
                 .ToListAsync();
 
@@ -110,7 +111,7 @@ namespace Lumina_WEB.Controllers
              * acumulado sube en 1 y se devuelve la alerta que corresponde según
              * el contador (3 = Leve, 6 = Media, 9 = Grande).
              */
-            var resultadoAlerta = DetectorAlertas.EvaluarYGenerarAlerta(entrada, _context);
+            var resultadoAlerta = DetectorAlertas.EvaluarYGenerarAlerta(entrada, _context.Database);
 
             /*
              * Si tocó una alerta, la guardamos para que el Index
