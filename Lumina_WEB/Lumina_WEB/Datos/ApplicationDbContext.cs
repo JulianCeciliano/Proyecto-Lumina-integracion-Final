@@ -38,6 +38,11 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Usuario> Usuarios { get; set; }
 
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -56,8 +61,8 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Usuario>()
             .HasOne(u => u.Cuenta)
-            .WithMany()
-            .HasForeignKey(u => u.IdCuenta)
+            .WithOne()
+            .HasForeignKey<Cuenta>(cuenta => cuenta.idCuenta)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

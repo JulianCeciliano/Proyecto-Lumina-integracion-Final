@@ -17,10 +17,10 @@ namespace Lumina_WEB.Controllers;
 
 public class UsuarioController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly DbSet<Usuario> _context;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public UsuarioController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+    public UsuarioController(DbSet<Usuario> context, IWebHostEnvironment webHostEnvironment)
     {
         _context = context;
         _webHostEnvironment = webHostEnvironment;

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Lumina_WEB.Datos;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,17 @@ builder.Services.AddSession();
 //Servicios de la BD
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptions => sqlServerOptions.CommandTimeout(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+        )
     )
+);
+
+builder.Services.AddScoped<ApplicationDbContext>(serviceProvider =>
+    serviceProvider
+        .GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
+        .CreateDbContextAsync()
 );
 
 var app = builder.Build();

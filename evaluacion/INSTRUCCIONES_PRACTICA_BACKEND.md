@@ -2,7 +2,7 @@
 
 ## Contexto y objetivo
 
-Lumina es una aplicación ASP.NET Core MVC de bienestar que usa Entity Framework Core, SQL Server y sesiones HTTP. Esta práctica contiene cambios intencionales en el backend que impiden compilar la solución.
+Lumina es una aplicación ASP.NET Core MVC de bienestar que usa Entity Framework Core, SQL Server y sesiones HTTP. Esta práctica contiene cambios intencionales en el backend que impiden compilar la solución; algunos diagnósticos proceden de dependencias encadenadas entre el contexto, la configuración del proveedor y el contenedor de servicios.
 
 Tu objetivo es diagnosticar cada error del compilador, recuperar contratos correctos entre capas y dejar el backend compilando sin modificar la interfaz.
 
@@ -24,7 +24,7 @@ dotnet build .\Lumina_WEB.slnx
 dotnet test .\Lumina_WEB.slnx
 ~~~
 
-El primer paso es resolver todos los errores de compilación. Lee cada diagnóstico completo: tipo esperado, tipo recibido, miembro inexistente, firma de método o referencia no disponible.
+El primer paso es resolver todos los errores de compilación. Lee cada diagnóstico completo: tipo esperado, tipo recibido, miembro inexistente, firma de método o referencia no disponible. No supongas que cada línea de la consola exige un arreglo independiente: una misma alteración puede originar diagnósticos encadenados. Si varios aparecen dentro del mismo controlador, revisa primero el contrato de sus dependencias compartidas antes de modificar cada acción.
 
 ## Reglas
 
@@ -33,6 +33,8 @@ El primer paso es resolver todos los errores de compilación. Lee cada diagnóst
 - No modifiques migraciones existentes, secretos, credenciales ni configuración de producción.
 - No debilites validaciones, autenticación ni controles de acceso para eliminar un error.
 - Conserva los contratos que consume la interfaz.
+- No resuelvas incompatibilidades con casts arbitrarios, bloqueos de tareas asíncronas ni registros duplicados de servicios.
+- No sustituyas una dependencia de acceso a datos por una colección concreta ni la registres como atajo para silenciar errores.
 - No consultes ni entregues la clave privada de la evaluación.
 
 ## Resultado esperado
@@ -43,7 +45,8 @@ Al finalizar:
 2. Los contratos entre el acceso a datos, controladores, modelo y configuración deben ser coherentes.
 3. Las llamadas asíncronas y APIs del framework deben respetar sus firmas.
 4. Las consultas y colecciones deben usar los tipos del modelo que corresponden.
-5. No debe haber cambios en interfaz, recursos, pruebas existentes ni migraciones.
+5. Las relaciones EF Core, opciones del proveedor y ciclos de vida de las dependencias deben conservar contratos coherentes.
+6. No debe haber cambios en interfaz, recursos, pruebas existentes ni migraciones.
 
 ## Entregables
 
@@ -65,4 +68,4 @@ Al finalizar:
 
 ## Recomendación
 
-Resuelve primero los errores que impiden al compilador reconocer una referencia o un miembro. Continúa con incompatibilidades de tipos y firmas. Tras cada corrección, vuelve a compilar: una reparación puede revelar el siguiente diagnóstico. Antes de entregar, comprueba que tu diff solo contiene cambios de backend permitidos.
+Empieza por reconstruir el contrato completo que rodea al diagnóstico: entidad principal y dependiente, tipo que devuelve una configuración, firma del delegado o ciclo de vida de un servicio. Continúa con incompatibilidades de tipos y firmas. Tras cada corrección, vuelve a compilar: una reparación puede revelar o eliminar varios diagnósticos relacionados. Antes de entregar, comprueba que tu diff solo contiene cambios de backend permitidos.
